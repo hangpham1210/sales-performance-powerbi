@@ -1,0 +1,91 @@
+table DimMonth
+	lineageTag: 2feb29e6-efe8-4c95-91b2-2b40c3df99fa
+
+	column MonthKey
+		formatString: 0
+		lineageTag: 8db66e10-40ed-4e32-846b-90771e63b227
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: fact_sales_month[MonthKey]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		formatString: 0
+		lineageTag: a88ed810-0bd2-43fd-aec9-14275045d21a
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthNumber
+		formatString: 0
+		lineageTag: 3092dcbe-4445-4c98-84f1-f91ff724e187
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [MonthNumber]
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthName
+		lineageTag: 9add5790-fa4f-4a29-a956-5d8a4dd23bf9
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [MonthName]
+		sortByColumn: MonthNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthShort
+		lineageTag: 04854128-fdf5-402b-8ce4-a8383c2f1dfe
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [MonthShort]
+		sortByColumn: MonthNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimMonth = calculated
+		mode: import
+		source =
+				
+				VAR MonthKey = DISTINCT('fact_sales_month'[MonthKey])
+				
+				RETURN
+				ADDCOLUMNS (
+				    MonthKey,
+				
+				    -- 1. Lấy Năm
+				    "Year",
+				        2000 + INT('fact_sales_month'[MonthKey] / 100),
+				
+				    -- 2. Lấy Số Tháng
+				    "MonthNumber",
+				        MOD('fact_sales_month'[MonthKey], 100),
+				
+				    -- 3. Tên tháng đầy đủ
+				    "MonthName",
+				        FORMAT(
+				            DATE(
+				                2000 + INT('fact_sales_month'[MonthKey] / 100),
+				                MOD('fact_sales_month'[MonthKey], 100),
+				                1
+				            ),
+				            "Mmmm"
+				        ),
+				
+				    -- 4. Tên tháng viết tắt
+				    "MonthShort",
+				        FORMAT(
+				            DATE(
+				                2000 + INT('fact_sales_month'[MonthKey] / 100),
+				                MOD('fact_sales_month'[MonthKey], 100),
+				                1
+				            ),
+				            "Mmm"
+				        )
+				)
+
+	annotation PBI_Id = 0c15624ce95d48529f17b48378452fb0
+

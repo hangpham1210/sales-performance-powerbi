@@ -1,0 +1,45 @@
+relationship 6fcc0fd4-aaaa-957b-9a7c-63aef2ec4923
+	fromColumn: DimSubAccount.'Tài khoản'
+	toColumn: DimAccount.'Tài khoản'
+
+relationship 3326f252-1934-aa76-9c43-327f0ea56daf
+	fromColumn: fact_finance.'Tiểu khoản'
+	toColumn: DimSubAccount.'Tiểu khoản'
+
+relationship e925e340-df1d-c4d1-54bf-67a311740bb7
+	crossFilteringBehavior: bothDirections
+	fromColumn: fact_finance.Date
+	toColumn: Calendar.Date
+
+relationship AutoDetected_45e34f06-1ff5-463c-ab01-53fc3ac79f20
+	fromColumn: fact_sales_month.Sku
+	toColumn: dim_sku.SKU
+
+relationship AutoDetected_6ccbcaa7-59c6-4edc-a001-9825a8d69fde
+	fromColumn: fact_sales_month.StoreId
+	toColumn: dim_store.'Store ID'
+
+relationship AutoDetected_283ed921-6e2c-4f4f-a8a4-fb6c406bd383
+	fromColumn: fact_finance.StoreID
+	toColumn: dim_store.'Store ID'
+
+relationship fdcdb84f-ef50-a395-c285-3d2437578eea
+	fromColumn: fact_sales_month.MonthKey
+	toColumn: DimMonth.MonthKey
+
+relationship f793737c-85f9-071d-4373-bad7872880b0
+	fromColumn: Calendar.MonthKey
+	toColumn: DimMonth.MonthKey
+
+relationship fb8ce2ad-d861-14c1-a935-73b47654fdeb
+	fromColumn: DimPL.'Tài khoản'
+	toColumn: DimAccount.'Tài khoản'
+
+relationship cbb40bb4-564f-2a23-a7cb-147fc900409f
+	fromColumn: dim_store.Area
+	toColumn: DimArea.Area
+
+relationship 00c9c3b0-0bca-f6be-74f2-5c96c58a3481
+	fromColumn: dim_store.Concept
+	toColumn: DimConcept.Concept
+

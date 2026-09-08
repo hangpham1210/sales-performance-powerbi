@@ -1,0 +1,524 @@
+table Measure
+	lineageTag: 22c91ea5-4bc5-4169-a01b-efb2a3f10867
+
+	measure 'Doanh thu thuần_TY' = ```
+			
+			    -CALCULATE(
+			        'Measure'[Trị giá YTD_TY], 
+			        
+			        KEEPFILTERS(fact_finance[Diễn giải tài khoản] IN {"Doanh thu bán hàng & cung cấp dịch vụ", "Doanh thu bán hàng nội bộ", "Các khoản giảm trừ doanh thu"})
+			    )
+			/ 10^9
+			```
+		lineageTag: f7611b7b-90fa-423a-be3a-1bf4f0d4f2d1
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Doanh thu thuần_LY' = ```
+			
+			    -CALCULATE(
+			        'Measure'[Trị giá YTD_LY], 
+			        
+			        KEEPFILTERS(fact_finance[Diễn giải tài khoản] IN {"Doanh thu bán hàng & cung cấp dịch vụ", "Doanh thu bán hàng nội bộ", "Các khoản giảm trừ doanh thu"})
+			    )/ 10^9
+			```
+		lineageTag: e8584bc2-f644-4e65-a870-69c93d3fccf3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Giá vốn hàng bán_TY' = ```
+			
+			    -CALCULATE(
+			       'Measure'[Trị giá YTD_TY], 
+			
+			    KEEPFILTERS(fact_finance[Diễn giải tài khoản] = "Giá vốn hàng bán")
+			    )
+			/10^9
+			```
+		lineageTag: 891ec9c0-76ee-4a40-ae6e-fca181a27031
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Giá vốn hàng bán_LY' = ```
+			
+			    -CALCULATE(
+			        'Measure'[Trị giá YTD_LY], 
+			        
+			        KEEPFILTERS(fact_finance[Diễn giải tài khoản] = "Giá vốn hàng bán")
+			    )
+			/10^9
+			```
+		lineageTag: f29e9677-64c3-4f95-ab8e-e43c544c4097
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Lợi nhuận gộp_TY' = [Doanh thu thuần_TY] + [Giá vốn hàng bán_TY]
+		lineageTag: 4511879c-c09f-4eaf-8e62-914b5af61cca
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Lợi nhuận gộp_LY' = [Doanh thu thuần_LY] + [Giá vốn hàng bán_LY]
+		lineageTag: 8e7b0266-c4b8-4fae-a6c1-7ed4bd86b60d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Chi phí hoạt động_TY' = ```
+			
+			    -CALCULATE(
+			        'Measure'[Trị giá YTD_TY],
+			        
+			        KEEPFILTERS(fact_finance[Diễn giải tài khoản] IN {"Chi phí bán hàng", "Chi phí quản lý doanh nghiệp", "Chi phí sử dụng máy thi công"})
+			        )
+			/10^9
+			```
+		lineageTag: f34248d9-5fca-44f2-9278-218d30f5f938
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Chi phí hoạt động_LY' = ```
+			
+			    -CALCULATE(
+			        'Measure'[Trị giá YTD_LY],
+			
+			        KEEPFILTERS(fact_finance[Diễn giải tài khoản] IN {"Chi phí bán hàng", "Chi phí quản lý doanh nghiệp", "Chi phí sử dụng máy thi công"})
+			        )
+			/10^9
+			```
+		lineageTag: 0a1c7a5d-f478-4378-b3c1-8df0c2d0cc24
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Lợi nhuận hoạt động (EBIT)_TY' = [Lợi nhuận gộp_TY] + [Chi phí hoạt động_TY]
+		lineageTag: 43f2db1a-0d3f-4fb4-9830-006b38acddd5
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Lợi nhuận hoạt động (EBIT)_LY' = [Lợi nhuận gộp_LY] + [Chi phí hoạt động_LY]
+		lineageTag: cb66c22a-f348-454d-9453-46b6753dfa05
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Chi phí Tài chính & Chi phí khác_TY' = ```
+			
+			    -CALCULATE(
+			        'Measure'[Trị giá YTD_TY],
+			
+			        KEEPFILTERS(fact_finance[Diễn giải tài khoản] IN {"Chi phí tài chính", "Chi phí khác"})
+			    )
+			/10^9
+			```
+		lineageTag: 713a851f-d155-4099-b4ac-f7da8254ab8a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Chi phí Tài chính & Chi phí khác_LY' = ```
+			
+			   -CALCULATE(
+			        'Measure'[Trị giá YTD_LY],
+			
+			        KEEPFILTERS(fact_finance[Diễn giải tài khoản] IN {"Chi phí tài chính", "Chi phí khác"})
+			    )/10^9
+			```
+		lineageTag: 3bae4eec-5a45-4ef0-8d50-1646414859fa
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Lợi nhuận trước thuế (EBT)_TY' = [Lợi nhuận hoạt động (EBIT)_TY] + [Chi phí Tài chính & Chi phí khác_TY] + [Doanh thu Tài chính & Thu nhập khác_TY]
+		lineageTag: 37afbd74-f490-4a8f-9715-a2d58b705f85
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Lợi nhuận trước thuế (EBT)_LY' = [Lợi nhuận hoạt động (EBIT)_LY] + [Chi phí Tài chính & Chi phí khác_LY] + [Doanh thu Tài chính & Thu nhập khác_LY]
+		lineageTag: c9411373-500c-4dc0-ab41-b696cf7f0c3d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Doanh thu Tài chính & Thu nhập khác_TY' = ```
+			
+			    -CALCULATE(
+			        'Measure'[Trị giá YTD_TY],
+			
+			        KEEPFILTERS(fact_finance[Diễn giải tài khoản] IN {"Doanh thu hoạt động tài chính", "Thu nhập khác"})
+			    )
+			/10^9
+			```
+		lineageTag: 25cb0d7f-33e2-4fc1-bfbf-6b79c4fc7d8f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Doanh thu Tài chính & Thu nhập khác_LY' = ```
+			
+			    -CALCULATE(
+			        'Measure'[Trị giá YTD_LY],
+			
+			        KEEPFILTERS(fact_finance[Diễn giải tài khoản] IN {"Doanh thu hoạt động tài chính", "Thu nhập khác"})
+			    )
+			/10^9
+			```
+		lineageTag: b20af3ea-d7ab-43df-abec-f671ef3a8397
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure MaxDate =
+			
+			CALCULATE(
+			    MAX(fact_finance[Date]),
+			    REMOVEFILTERS(fact_finance),
+			    REMOVEFILTERS(Calendar)
+			)
+		formatString: General Date
+		lineageTag: 0fb7ed5d-43a7-46ed-9e4a-1841ccd6195c
+
+	measure 'Trị giá YTD_TY' =
+			
+			VAR MaxDate = [MaxDate]
+			
+			RETURN
+			CALCULATE (
+			    SUM(fact_finance[Trị giá]),
+			    DATESBETWEEN (
+			        Calendar[Date],
+			        DATE (YEAR(MaxDate), 1, 1 ),
+			        MaxDate
+			    )
+			)
+		lineageTag: 7e66af86-380d-409f-a21d-e5246f1e93d5
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Trị giá YTD_LY' =
+			
+			VAR MaxDate = [MaxDate]
+			VAR EndDate = EDATE(MaxDate, -12)
+			VAR StartDate = DATE(YEAR(EndDate), 1, 1)
+			
+			RETURN
+			CALCULATE(
+			    SUM(fact_finance[Trị giá]),
+			    DATESBETWEEN(
+			        Calendar[Date],
+			        StartDate,
+			        EndDate
+			    )
+			)
+		lineageTag: 72ee5cc2-ab3e-41af-a2ad-0b74a27d08c4
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Doanh thu thuần_Montly' =
+			
+			-CALCULATE(
+			    SUM(fact_finance[Trị giá]),
+			    KEEPFILTERS(
+			        fact_finance[Diễn giải tài khoản]
+			            IN {
+			                "Doanh thu bán hàng & cung cấp dịch vụ",
+			                "Doanh thu bán hàng nội bộ",
+			                "Các khoản giảm trừ doanh thu"
+			            }
+			    )
+			) / 10^9
+		lineageTag: b4f71185-4e4c-4369-8f67-20672d36eb01
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Lợi nhuận trước thuế (EBT)_Monthly' = ```
+			
+			    [Lợi nhuận hoạt động (EBIT)_Monthly]
+			    + [Chi phí Tài chính & Chi phí khác_Monthly]
+			    + [Doanh thu Tài chính & Thu nhập khác_Monthly]
+			```
+		lineageTag: 78b2c673-6cf4-484c-8a10-c355b45caaa4
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Giá vốn hàng bán_Montly' =
+			
+			CALCULATE(
+			    SUM(fact_finance[Trị giá]),
+			    KEEPFILTERS(
+			        fact_finance[Diễn giải tài khoản] = "Giá vốn hàng bán"
+			    )
+			) / 10^9
+		lineageTag: 58e9b613-6e23-4614-8163-e12e2782703b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '% Tăng trưởng Doanh thu thuần YTD' =
+			
+			DIVIDE(
+			    [Doanh thu thuần_TY] - [Doanh thu thuần_LY],
+			    ABS([Doanh thu thuần_LY]),
+			    BLANK()
+			)
+		lineageTag: 794947f1-4792-4bb5-8b6f-37a8f98a9e71
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Doanh thu Tài chính & Thu nhập khác_Monthly' =
+			
+			-CALCULATE(
+			    SUM(fact_finance[Trị giá]),
+			    KEEPFILTERS(
+			        fact_finance[Diễn giải tài khoản]
+			            IN {
+			                "Doanh thu hoạt động tài chính",
+			                "Thu nhập khác"
+			            }
+			    )
+			) / 10^9
+		lineageTag: ce0feead-3a44-4d36-996f-e600d600441e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Chi phí Tài chính & Chi phí khác_Base' =
+			
+			-CALCULATE(
+			    SUM(fact_finance[Trị giá]),
+			    KEEPFILTERS(
+			        fact_finance[Diễn giải tài khoản]
+			            IN {
+			                "Chi phí tài chính",
+			                "Chi phí khác"
+			            }
+			    )
+			) / 10^9
+		lineageTag: 50c851bc-9657-4b53-8d87-e5250cb804bd
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Chi phí Tài chính & Chi phí khác_Monthly' =
+			
+			-CALCULATE(
+			    SUM(fact_finance[Trị giá]),
+			    KEEPFILTERS(
+			        fact_finance[Diễn giải tài khoản]
+			            IN {
+			                "Chi phí tài chính",
+			                "Chi phí khác"
+			            }
+			    )
+			) / 10^9
+		lineageTag: 1264792b-6329-4674-bd7c-107a790497f1
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Chi phí hoạt động_Monthly' =
+			
+			-CALCULATE(
+			    SUM(fact_finance[Trị giá]),
+			    KEEPFILTERS(
+			        fact_finance[Diễn giải tài khoản]
+			            IN {
+			                "Chi phí bán hàng", "Chi phí quản lý doanh nghiệp", "Chi phí sử dụng máy thi công"
+			            }
+			    )
+			) / 10^9
+		lineageTag: a454028d-b056-48bb-a4ee-6c39e36783c2
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Lợi nhuận gộp_Monthly' = ```
+			
+			    [Doanh thu thuần_Montly]
+			    - [Giá vốn hàng bán_Montly]
+			```
+		lineageTag: 12a06194-7338-44cc-a1c8-f0f41c05e104
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Lợi nhuận hoạt động (EBIT)_Monthly' = [Lợi nhuận gộp_Monthly] + [Chi phí hoạt động_Monthly]
+		lineageTag: 2dcd90f1-396f-4531-9cfb-bbf553a86f10
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Tiêu đề Chi tiểt_TC' =
+			
+			VAR _MaxDate = [MaxDate]
+			RETURN
+			    "TỔNG QUAN TÌNH HÌNH TÀI CHÍNH THEO MÔ HÌNH/ KHU VỰC ĐẾN THÁNG "
+			        & FORMAT(_MaxDate, "MM/YYYY")
+		lineageTag: ccb08d88-7e28-455e-88da-a81eeaaf143b
+
+	measure '% Tăng trưởng Doanh thu thuần_card' =
+			
+			VAR DT_Change =
+			    [% Tăng trưởng Doanh thu thuần YTD]*100
+			
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        ISBLANK(DT_Change), BLANK(),
+			        DT_Change > 0,
+			            "▲" & FORMAT(DT_Change, "0.0") & "%",
+			        DT_Change < 0,
+			            "▼" & FORMAT(ABS(DT_Change), "0.0") & "%",
+			        "–"
+			    )
+		lineageTag: 09f30974-5cb5-4c8b-9f1f-5c0531b4b290
+
+	measure '% Tăng trưởng Lợi nhuận gộp_card' =
+			
+			VAR DT_Change =
+			    [% Tăng trưởng Lợi nhuận gộp YTD]*100
+			
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        ISBLANK(DT_Change), BLANK(),
+			        DT_Change > 0,
+			            "▲" & FORMAT(DT_Change, "0.0") & "%",
+			        DT_Change < 0,
+			            "▼" & FORMAT(ABS(DT_Change), "0.0") & "%",
+			        "–"
+			    )
+		lineageTag: bb87ceb2-d62f-4d6a-851d-d7bd81d87c95
+
+	measure '% Tăng trưởng Lợi nhuận gộp YTD' =
+			
+			DIVIDE(
+			    [Lợi nhuận gộp_TY] - [Lợi nhuận gộp_LY],
+			    ABS([Lợi nhuận gộp_LY]),
+			    BLANK()
+			)
+		lineageTag: c589c9d2-92a7-48b4-8cf9-186f10294734
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Tăng trưởng Lợi nhuận trước thuế_card' = ```
+			
+			VAR DT_Change = [Lợi nhuận trước thuế (EBT)_TY] - [Lợi nhuận trước thuế (EBT)_LY]
+			
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        ISBLANK(DT_Change), BLANK(),
+			        DT_Change > 0,
+			            "▲" & FORMAT(DT_Change, "0.0") & "tỷ.đ",
+			        DT_Change < 0, 
+			            "▼" & FORMAT(ABS(DT_Change), "0.0") & " tỷ.đ",
+			        "–"
+			    )
+			```
+		lineageTag: eba06755-8ecf-4410-9ecf-b70e95d385dc
+
+	measure '% Tăng trưởng Giá vốn hàng bán_card' =
+			
+			VAR DT_Change = DIVIDE(
+			    [Giá vốn hàng bán_TY]
+			        - [Giá vốn hàng bán_LY],
+			    [Giá vốn hàng bán_LY]
+			)*100
+			
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        ISBLANK(DT_Change), BLANK(),
+			        DT_Change > 0,
+			            "▲" & FORMAT(DT_Change, "0.0") & "%",
+			        DT_Change < 0,
+			            "▼" & FORMAT(ABS(DT_Change), "0.0") & "%",
+			        "–"
+			    )
+		lineageTag: 37706584-2aaf-47e7-98df-241c62822798
+
+	measure '% Tăng trưởng Chi phí hoạt động_card' =
+			
+			VAR DT_Change = DIVIDE(
+			    [Chi phí hoạt động_TY]
+			        - [Chi phí hoạt động_LY],
+			    [Chi phí hoạt động_LY]
+			)*100
+			
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        ISBLANK(DT_Change), BLANK(),
+			        DT_Change > 0,
+			            "▲" & FORMAT(DT_Change, "0.0") & "%",
+			        DT_Change < 0,
+			            "▼" & FORMAT(ABS(DT_Change), "0.0") & "%",
+			        "–"
+			    )
+		lineageTag: c33e305f-fba3-4e03-bf3b-6d3f313443d8
+
+	measure 'Tiêu đề Tổng quan_TC' =
+			
+			VAR _MaxDate = [MaxDate]
+			RETURN
+			    "TỔNG QUAN TÌNH HÌNH TÀI CHÍNH ĐẾN THÁNG "
+			        & FORMAT(_MaxDate, "MM/YYYY")
+		lineageTag: 206a28be-d78d-4f9c-a64b-6a8a833514b1
+
+	measure 'Tiêu đề Tổng quan_KD' =
+			
+			VAR _MonthKey = MAX('fact_sales_month'[MonthKey])
+			VAR _Year = 2000 + INT(_MonthKey / 100)
+			VAR _Month = MOD(_MonthKey, 100)
+			VAR _Date = DATE(_Year, _Month, 1)
+			
+			RETURN
+			    "TỔNG QUAN TÌNH HÌNH KINH DOANH ĐẾN THÁNG "
+			        & FORMAT(_Date, "MM/YYYY")
+		lineageTag: 887038eb-0ee3-42b8-b3bc-2efb4c635ae4
+
+	measure 'Tiêu đề chi tiết_KD' =
+			
+			VAR _MonthKey = MAX('fact_sales_month'[MonthKey])
+			VAR _Year = 2000 + INT(_MonthKey / 100)
+			VAR _Month = MOD(_MonthKey, 100)
+			VAR _Date = DATE(_Year, _Month, 1)
+			
+			RETURN
+			    "TỔNG QUAN TÌNH HÌNH KINH DOANH THEO MÔ HÌNH/ KHU VỰC ĐẾN THÁNG "
+			        & FORMAT(_Date, "MM/YYYY")
+		lineageTag: fbf08132-4010-45d9-a430-5f8f8b6d5e3c
+
+	measure 'Trị giá YTD_TY minus Trị giá YTD_LY' =
+			
+			[Trị giá YTD_TY] - [Trị giá YTD_LY]
+		lineageTag: e33c88c5-5758-4bb1-9127-7971b2443b36
+
+		extendedProperty MeasureTemplate =
+				{
+				  "version": 0,
+				  "daxTemplateName": "MathematicalSubtraction"
+				}
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Trị giá YTD_TY % difference from Trị giá YTD_LY' =
+			
+			VAR __BASELINE_VALUE = [Trị giá YTD_LY]
+			VAR __VALUE_TO_COMPARE = [Trị giá YTD_TY]
+			RETURN
+				IF(
+					NOT ISBLANK(__VALUE_TO_COMPARE),
+					DIVIDE(__VALUE_TO_COMPARE - __BASELINE_VALUE, __BASELINE_VALUE)
+				)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: a9860c04-9713-4a4c-b861-cd85d64ac7a4
+
+		extendedProperty MeasureTemplate =
+				{
+				  "version": 0,
+				  "daxTemplateName": "MathematicalPercentageDifference"
+				}
+
+	column Column
+		formatString: 0
+		lineageTag: 0d74a438-a5ee-4559-85fd-be7d1c14322b
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Column]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Measure = calculated
+		mode: import
+		source = Row("Column", BLANK())
+
+	annotation PBI_Id = 61f8ae324f114c759cabf9fee288a496
+
+	annotation 436ba87b-9c83-4389-a31b-ebd06a36be98 = {"Expression":""}
+

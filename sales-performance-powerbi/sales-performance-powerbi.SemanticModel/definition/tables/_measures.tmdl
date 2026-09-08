@@ -1,0 +1,372 @@
+/// Bảng tập trung toàn bộ measures tài chính để dễ quản lý và chỉnh sửa.
+table _measures
+	lineageTag: a7475a61-f156-475f-8c6d-3cbc62106490
+
+	measure 'Kế hoạch CBL' =
+			
+			BLANK()
+		formatString: 0
+		displayFolder: CBL
+		lineageTag: 02f34f6a-dd31-4ff9-bc1f-de64e50a1636
+
+	measure 'Lãi gộp TLL' =
+			
+			DIVIDE(
+			    SUMX(
+			        fact_sales_month,
+			        fact_sales_month[SalesNoVat] - fact_sales_month[Cost]
+			    ),
+			    1000000000
+			)
+		formatString: #,0
+		displayFolder: TLL
+		lineageTag: 0f032439-c51e-47af-9fbb-0a34178c3516
+
+	measure 'Doanh số TLL' = SUM(fact_sales_month[SalesNoVat]) / 1000000000
+		displayFolder: TLL
+		lineageTag: 9c57f395-31cc-4a7b-87e0-1c33b7d64db2
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Biên lãi gộp TLL' = DIVIDE([Lãi gộp TLL], [Doanh số TLL])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: TLL
+		lineageTag: a4b47738-7e7e-45a0-9591-8623628c271e
+
+	measure 'YTD_Lãi gộp_CBL (tỷ.đ)_TY' =
+			VAR _MaxSalesMonth = MAX(fact_sales_month[MonthKey])
+			VAR _StartOfMonth = INT(_MaxSalesMonth / 100) * 100 + 1
+			
+			RETURN
+			    CALCULATE(
+			        [Lãi gộp TLL],
+			        REMOVEFILTERS(DimMonth),
+			        DimMonth[MonthKey] >= _StartOfMonth
+			            && DimMonth[MonthKey] <= _MaxSalesMonth
+			    )
+		formatString: 0
+		displayFolder: TLL
+		lineageTag: 6ba8ccd1-a26c-4aeb-8a2e-dade019fb6d8
+
+	measure 'YTD_Lãi gộp_CBL (tỷ.đ)_LY' =
+			VAR _MaxSalesMonth = MAX(fact_sales_month[MonthKey])
+			VAR _LastYearMaxMonth = _MaxSalesMonth - 100
+			VAR _LastYearStartMonth = (INT(_MaxSalesMonth / 100) - 1) * 100 + 1
+			
+			RETURN
+			    CALCULATE(
+			        [Lãi gộp TLL],
+			        REMOVEFILTERS(DimMonth),
+			        DimMonth[MonthKey] >= _LastYearStartMonth
+			            && DimMonth[MonthKey] <= _LastYearMaxMonth
+			    )
+		displayFolder: TLL
+		lineageTag: c8c833f5-0659-4553-bc9c-b9f660af191c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'YTD_Biên lãi gộp_CBL_TY' = ```
+			
+			VAR _MaxSalesMonth = MAX(fact_sales_month[MonthKey])
+			VAR _Year = INT(_MaxSalesMonth / 100)
+			VAR _StartOfMonth = _Year * 100 + 1
+			
+			VAR _YTD_DoanhSo = 
+			    CALCULATE(
+			        [Doanh số TLL],
+			        'DimMonth'[MonthKey] >= _StartOfMonth 
+			        && 'DimMonth'[MonthKey] <= _MaxSalesMonth
+			    )
+			
+			RETURN
+			    DIVIDE([YTD_Lãi gộp_CBL (tỷ.đ)_TY], _YTD_DoanhSo, 0)
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: TLL
+		lineageTag: 1b5884cf-6845-4980-9850-f1a049c4310b
+
+	measure 'DS CBL (tỷ.đ)' = SUM(fact_sales_month[SalesNoVat]) / 1000000000
+		formatString: 0
+		displayFolder: CBL
+		lineageTag: b017687e-248a-4926-a410-193928d250e3
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure 'YTD_DS_CBL (tỷ.đ)_TY' =
+			VAR _MaxSalesMonth = MAX(fact_sales_month[MonthKey])
+			VAR _StartOfMonth = INT(_MaxSalesMonth / 100) * 100 + 1
+			
+			RETURN
+			    CALCULATE(
+			        [DS CBL (tỷ.đ)],
+			        REMOVEFILTERS(DimMonth),
+			        DimMonth[MonthKey] >= _StartOfMonth
+			            && DimMonth[MonthKey] <= _MaxSalesMonth
+			    )
+		formatString: #,0.0
+		displayFolder: CBL
+		lineageTag: 23472aa1-818e-4132-94e6-df0cfa402d4f
+
+	measure 'YTD_DS_CBL (tỷ.đ)_LY' =
+			VAR _MaxSalesMonth = MAX(fact_sales_month[MonthKey])
+			VAR _LastYearMaxMonth = _MaxSalesMonth - 100
+			VAR _LastYearStartMonth = (INT(_MaxSalesMonth / 100) - 1) * 100 + 1
+			
+			RETURN
+			    CALCULATE(
+			        [DS CBL (tỷ.đ)],
+			        REMOVEFILTERS(DimMonth),
+			        DimMonth[MonthKey] >= _LastYearStartMonth
+			            && DimMonth[MonthKey] <= _LastYearMaxMonth
+			    )
+		formatString: #,0.00
+		displayFolder: CBL
+		lineageTag: 1f4a905a-9de5-4ed6-9757-2edd065d2891
+
+	measure YTD_TT_DS_CBL =
+			
+			DIVIDE(
+			    [YTD_DS_CBL (tỷ.đ)_TY] - [YTD_DS_CBL (tỷ.đ)_LY],
+			    [YTD_DS_CBL (tỷ.đ)_LY]
+			)
+		displayFolder: CBL
+		lineageTag: ebac105a-8a4c-401d-8552-8623a407cb81
+
+		formatStringDefinition = "▲0.0%;▼0.0%;0.0%"
+
+	measure 'DS CBL (tỷ.đ)_LY' = ```
+			
+			VAR PreviousYearMonthKeys = 
+			    SELECTCOLUMNS(
+			        VALUES(fact_sales_month[MonthKey]), 
+			        "PY_MonthKey", fact_sales_month[MonthKey] - 100
+			    )
+			
+			RETURN
+			    CALCULATE(
+			        [DS CBL (tỷ.đ)],
+			        
+			        -- 1. Gỡ bỏ màng lọc của MonthKey cũ
+			        REMOVEFILTERS(fact_sales_month[MonthKey]),
+			        
+			        -- 2. BẮT BUỘC gỡ bỏ màng lọc của cột Year và MonthName đang nằm trên biểu đồ
+			        -- (Thay 'Tên_Bảng' bằng đúng tên bảng chứa cột Year và MonthName của bạn)
+			        REMOVEFILTERS('DimMonth'[Year]), 
+			        REMOVEFILTERS('DimMonth'[MonthName]),
+			        
+			        -- 3. Ép MonthKey của năm ngoái vào
+			        fact_sales_month[MonthKey] IN PreviousYearMonthKeys
+			    )
+			```
+		displayFolder: CBL
+		lineageTag: 83fd40a1-3e14-4ea0-ba65-703a0860d495
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Tốc độ tăng trưởng doanh số so CK CBL' =
+			
+			DIVIDE(
+			    [DS CBL (tỷ.đ)_TY] - [DS CBL (tỷ.đ)_LY],
+			    [DS CBL (tỷ.đ)_LY]
+			)
+		formatString: ▲0.0%;▼0.0%;0.0%
+		displayFolder: CBL
+		lineageTag: b23c0074-6a00-449f-aed2-17e8ca14a516
+
+		annotation PBI_FormatHint = {"isCustom":true}
+
+	measure '% đạt kế hoạch CBL' =
+			
+			DIVIDE(
+			    [YTD_DS_CBL (tỷ.đ)_TY],
+			    [Kế hoạch CBL]
+			)
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: CBL
+		lineageTag: 64be7dfd-8c6c-4646-baee-6ffd2d4ef86f
+
+	measure 'DS CBL BQN_TY' = ```
+			
+			-- 1. Lấy MonthKey lớn nhất trên toàn bộ bảng dữ liệu (Bỏ qua mọi bộ lọc)
+			VAR GlobalMaxMonthKey = CALCULATE(MAX(fact_sales_month[MonthKey]), REMOVEFILTERS())
+			
+			-- 2. Tách Năm và Tháng
+			VAR MaxYear = 2000 + INT(GlobalMaxMonthKey / 100)  -- 2026
+			VAR MaxMonth = MOD(GlobalMaxMonthKey, 100)         -- 7
+			
+			-- 3. Ngày đầu tiên của năm (01/01/2026)
+			VAR FirstDayOfYear = DATE(MaxYear, 1, 1)
+			
+			-- 4. Ngày cuối cùng của chính MonthKey đó (Ví dụ: 31/07/2026)
+			VAR LastDayOfMaxMonth = EOMONTH(DATE(MaxYear, MaxMonth, 1), 0)
+			
+			-- 5. Tổng số ngày tính từ 01/01 đến hết tháng Max
+			VAR TotalDaysYTD = INT(LastDayOfMaxMonth - FirstDayOfYear) + 1
+			
+			RETURN
+			    DIVIDE(
+			        [YTD_DS_CBL (tỷ.đ)_TY], 
+			        TotalDaysYTD
+			    )
+			```
+		formatString: #,0.00
+		displayFolder: CBL
+		lineageTag: 5836dd12-dea1-44fb-a8cf-69201a7a8cc1
+
+	measure '% đạt kế hoạch CBL (Active)' =
+			
+			DIVIDE(
+			    [YTD_DS_CBL (tỷ.đ)_TY],
+			    [Kế hoạch CBL (Active)]
+			)
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: CBL
+		lineageTag: 864787bb-f3da-418d-8afb-410dbff53bda
+
+	measure 'Kế hoạch CBL (Active)' =
+			
+			BLANK()
+		formatString: 0
+		displayFolder: CBL
+		lineageTag: 18451adb-987f-4970-bc2d-60bbc5a47bb9
+
+	measure 'YTD_Lãi gộp_TT' = DIVIDE(([YTD_Lãi gộp_CBL (tỷ.đ)_TY]-[YTD_Lãi gộp_CBL (tỷ.đ)_LY]),[YTD_Lãi gộp_CBL (tỷ.đ)_LY])
+		formatString: ▲0.0%;▼0.0%;0.0%
+		displayFolder: TLL
+		lineageTag: c9ecfc34-4f05-4064-a199-a282c0f8f4f7
+
+		annotation PBI_FormatHint = {"isCustom":true}
+
+	measure 'YTD_Biên lãi gộp_CBL_LY' = ```
+			
+			VAR _MaxSalesMonth = MAX(fact_sales_month[MonthKey])
+			VAR _LastYearMaxMonth = _MaxSalesMonth - 100                          -- Ví dụ: 2408 -> 2308
+			VAR _LastYearStartMonth = (INT(_MaxSalesMonth / 100) - 1) * 100 + 1  -- Ví dụ: 2301
+			
+			-- 1. Tính Doanh số YTD Cùng kỳ năm trước
+			VAR _YTD_DoanhSo_CK = 
+			    CALCULATE(
+			        [Doanh số TLL],
+			        REMOVEFILTERS('DimMonth'),
+			        'DimMonth'[MonthKey] >= _LastYearStartMonth 
+			        && 'DimMonth'[MonthKey] <= _LastYearMaxMonth
+			    )
+			
+			-- 2. Lấy Lãi gộp YTD Cùng kỳ năm trước
+			VAR _YTD_LaiGop_CK = [YTD_Lãi gộp_CBL (tỷ.đ)_LY]
+			
+			-- 3. Tính Biên lãi gộp CK = Lãi gộp CK / Doanh số CK
+			RETURN
+			    DIVIDE(
+			        _YTD_LaiGop_CK, 
+			        _YTD_DoanhSo_CK, 
+			        0
+			    )
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: TLL
+		lineageTag: c44bc989-482f-4914-9c9a-bd9e50698105
+
+	measure 'YTD_Biên lãi gộp_TT' = [YTD_Biên lãi gộp_CBL_TY] - [YTD_Biên lãi gộp_CBL_LY]
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: TLL
+		lineageTag: 03da2326-920d-46f5-8e35-ab407979654d
+
+	measure 'YTD_Biên lãi gộp_TT (Text)' =
+			
+			VAR _Diff = [YTD_Biên lãi gộp_CBL_TY] - [YTD_Biên lãi gộp_CBL_LY]
+			VAR _DiffPoints = _Diff * 100 -- Chuyển từ tỷ lệ về điểm (ví dụ 0.035 -> 3.5 điểm)
+			
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        ISBLANK([YTD_Biên lãi gộp_CBL_TY]) || ISBLANK([YTD_Biên lãi gộp_CBL_LY]), BLANK(),
+			        _Diff > 0, "▲" & FORMAT(_DiffPoints, "0.00") & " điểm %",
+			        _Diff < 0, "▼" & FORMAT(ABS(_DiffPoints), "0.00") & " điểm %",
+			        "Không đổi (0.00 điểm %)"
+			    )
+		displayFolder: TLL
+		lineageTag: 1c0c88e5-9f2b-462e-988a-1dec55da2324
+
+	measure 'YTD_TT DS CBL_Label Color' =
+			
+			VAR GrowthValue =
+			    [YTD_TT_DS_CBL]
+			
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        ISBLANK(GrowthValue), "#808080",
+			        GrowthValue > 0, "#008000",
+			        GrowthValue < 0, "#C00000",
+			        "#808080"
+			    )
+		displayFolder: CBL
+		lineageTag: 3b016499-9dfa-4898-909e-2fd4b627d06e
+
+	measure 'DS CBL (tỷ.đ)_TY' =
+			VAR MaxMonthKey =
+			    CALCULATE(
+			        MAX(fact_sales_month[MonthKey]),
+			        REMOVEFILTERS(fact_sales_month),
+			        REMOVEFILTERS(DimMonth)
+			    )
+			VAR CurrentYear = INT(MaxMonthKey / 100)
+			VAR CurrentYearMonthKeys =
+			    SELECTCOLUMNS(
+			        VALUES(fact_sales_month[MonthKey]),
+			        "TY_MonthKey", CurrentYear * 100 + MOD(fact_sales_month[MonthKey], 100)
+			    )
+			
+			RETURN
+			    CALCULATE(
+			        [DS CBL (tỷ.đ)],
+			        REMOVEFILTERS(fact_sales_month[MonthKey]),
+			        REMOVEFILTERS(DimMonth),
+			        fact_sales_month[MonthKey] IN CurrentYearMonthKeys
+			    )
+		formatString: 0
+		displayFolder: CBL
+		lineageTag: 2a9d2f13-6a0d-4b9a-9fb9-5f9bc3e7d1c4
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure 'Tỷ trọng DS nhóm hàng' =
+			
+			DIVIDE(
+			    [YTD_DS_CBL (tỷ.đ)_TY],
+			    CALCULATE(
+			        [YTD_DS_CBL (tỷ.đ)_TY],
+			        REMOVEFILTERS(
+			            'dim_sku'[Ngành hàng],
+			            'dim_sku'[Nhóm hàng]
+			        )
+			    )
+			)
+		displayFolder: CBL
+		lineageTag: 3d108df5-e073-4f34-a40a-d71bb63ac3db
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Tỷ trọng DS SKU' =
+			
+			DIVIDE(
+			    [YTD_DS_CBL (tỷ.đ)_TY],
+			    CALCULATE(
+			        [YTD_DS_CBL (tỷ.đ)_TY],
+			        REMOVEFILTERS('dim_sku'[SKU])
+			    )
+			)
+		displayFolder: CBL
+		lineageTag: 1af11992-ab56-4066-8ac7-cdc18e27df72
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column _Dummy
+		lineageTag: af936e06-cd83-4790-9c67-0fcc2a01c808
+		sourceColumn: [Dummy]
+
+	partition _measures = calculated
+		mode: import
+		source = ROW("Dummy", BLANK())
+

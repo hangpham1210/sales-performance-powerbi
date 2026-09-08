@@ -1,0 +1,112 @@
+table dim_store
+	lineageTag: 22127973-c248-4ffa-ba56-4cc196c5cd90
+
+	column 'Store ID'
+		dataType: string
+		lineageTag: bb49b836-1541-431b-9aa0-f036b2f3c07e
+		summarizeBy: none
+		sourceColumn: Store ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Concept
+		dataType: string
+		lineageTag: 8947840d-5d3f-488d-a2d6-a73d98f68d4f
+		summarizeBy: none
+		sourceColumn: Concept
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Store Name'
+		dataType: string
+		lineageTag: b6e153ca-c108-49af-ac74-feb76e0864bb
+		summarizeBy: none
+		sourceColumn: Store Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Area
+		dataType: string
+		lineageTag: 44725fee-e274-4ca4-bc0b-36bada9dc2e1
+		summarizeBy: none
+		sourceColumn: Area
+
+		annotation SummarizationSetBy = Automatic
+
+	column Address
+		dataType: string
+		lineageTag: 064b480d-e03d-468b-b08d-8b8464401c6f
+		summarizeBy: none
+		sourceColumn: Address
+
+		annotation SummarizationSetBy = Automatic
+
+	column Latitude
+		dataType: double
+		lineageTag: 287a1a92-47c7-45b7-aeb4-a3b066ed7cc9
+		summarizeBy: sum
+		sourceColumn: Latitude
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Longitude
+		dataType: double
+		lineageTag: cacfcf8f-7625-49e3-b3a3-d671cf592902
+		summarizeBy: sum
+		sourceColumn: Longitude
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Store Size (m²)'
+		dataType: int64
+		formatString: 0
+		lineageTag: 79cea57a-27b1-497b-99dc-7dcc76885526
+		summarizeBy: sum
+		sourceColumn: Store Size (m²)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Opening Date'
+		dataType: int64
+		formatString: 0
+		lineageTag: a77fd9e7-20de-4eb1-87e2-d27ee0be3fec
+		summarizeBy: sum
+		sourceColumn: Opening Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Store Status'
+		dataType: string
+		lineageTag: 815c10a1-3398-4971-a812-688d5fdd2ad7
+		summarizeBy: none
+		sourceColumn: Store Status
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_store = m
+		mode: import
+		source =
+				let
+				    Source = let
+				    Source = Excel.Workbook(
+				        File.Contents("C:\Users\phamt\Documents\Dummy\store.xlsx"),
+				        null,
+				        true
+				    ),
+				    Store = Source{[Item="Store", Kind="Sheet"]}[Data]
+				in
+				    Store,
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Store ID", type text}, {"Concept", type text}, {"Store Name", type text}, {"Area", type text}, {"Address", type text}, {"Latitude", type number}, {"Longitude", type number}, {"Store Size (m²)", Int64.Type}, {"Opening Date", Int64.Type}, {"Store Status", type text}}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Changed Type","Convenience","Convenience Store",Replacer.ReplaceText,{"Concept"})
+				in
+				    #"Replaced Value"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

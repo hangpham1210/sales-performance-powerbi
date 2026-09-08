@@ -1,0 +1,334 @@
+table Heatmap
+	lineageTag: fe6fa7b6-275d-4742-9644-b330244bb8cd
+
+	measure 'Heatmap Value' =
+			
+			VAR MaxDate = [MaxDate]
+			VAR StartDate = DATE(YEAR(MaxDate), 1, 1)
+			
+			VAR SelectedDetail =
+			    SELECTEDVALUE(DimPL[Chi tiết])
+			
+			VAR SelectedKPI =
+			    SELECTEDVALUE(Heatmap[KPI], "Doanh thu thuần")
+			
+			// Giá trị khi có 1 dòng chi tiết cụ thể đang được chọn (vd: "Chi phí bán hàng")
+			VAR ValueByDetail =
+			    -CALCULATE(
+			        SUM(fact_finance[Trị giá]),
+			        DATESBETWEEN(Calendar[Date], StartDate, MaxDate),
+			        KEEPFILTERS(fact_finance[Diễn giải tài khoản] = SelectedDetail)
+			    ) / 10^9
+			
+			// Giá trị mặc định theo KPI đang chọn (khi không có dòng chi tiết nào được chọn)
+			VAR ValueByKPI =
+			    SWITCH(
+			        SelectedKPI,
+			        "Doanh thu thuần", [Doanh thu thuần_TY],
+			        "Lợi nhuận trước thuế", [Lợi nhuận trước thuế (EBT)_TY],
+			        "Tăng trưởng doanh thu", [% Tăng trưởng Doanh thu thuần YTD],
+			        "Tăng trưởng lợi nhuận", [% Tăng trưởng Lợi nhuận gộp YTD],
+			        BLANK()
+			    )
+			
+			RETURN
+			    IF(
+			        NOT ISBLANK(SelectedDetail),
+			        ValueByDetail,
+			        ValueByKPI
+			    )
+		lineageTag: 36f0bffb-5f70-4839-bdbe-413dcb08fe4b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Heatmap Label' = ```
+			
+			VAR SelectedDetail =
+			    SELECTEDVALUE(DimPL[Chi tiết])
+			
+			VAR SelectedKPI =
+			    SELECTEDVALUE(Heatmap[KPI], "Doanh thu thuần")
+			
+			VAR vValue =
+			    [Heatmap Value]
+			
+			RETURN
+			    IF(
+			        NOT ISBLANK(SelectedDetail),
+			        FORMAT(vValue, "#,##0.00"),
+			        SWITCH(
+			            SelectedKPI,
+			            
+			            "Doanh thu thuần",
+			                FORMAT(vValue, "#,##0"),
+			            
+			            "Lợi nhuận trước thuế",
+			                FORMAT(vValue, "#,##0.0"),
+			            
+			            "Tăng trưởng doanh thu",
+			                SWITCH(
+			                    TRUE(),
+			                    ISBLANK(vValue), BLANK(),
+			                    vValue > 0, "▲ " & FORMAT(vValue, "0.0%"),
+			                    vValue < 0, "▼ " & FORMAT(ABS(vValue), "0.0%"),
+			                    "–"
+			                ),
+			            
+			            "Tăng trưởng lợi nhuận",
+			                SWITCH(
+			                    TRUE(),
+			                    ISBLANK(vValue), BLANK(),
+			                    vValue > 0, "▲ " & FORMAT(vValue, "0.0%"),
+			                    vValue < 0, "▼ " & FORMAT(ABS(vValue), "0.0%"),
+			                    "–"
+			                ),
+			            
+			            BLANK()
+			        )
+			    )
+			```
+		lineageTag: 9d127a11-e931-40a2-aa88-b53fd3761ceb
+
+	measure 'Heatmap Color Value' =
+			
+			VAR SelectedKPI =
+			    SELECTEDVALUE(
+			        Heatmap[KPI],
+			        "Doanh thu thuần"
+			    )
+			
+			VAR vValue =
+			    [Heatmap Value]
+			
+			RETURN
+			SWITCH(
+			    TRUE(),
+			
+			    SelectedKPI IN {
+			        "Tăng trưởng doanh thu",
+			        "Tăng trưởng lợi nhuận"
+			    },
+			        vValue,
+			
+			    vValue
+			)
+		lineageTag: 2e4c3345-0116-4944-80d6-a2a24f0461ef
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Heatmap KPI Type' =
+			
+			VAR SelectedKPI =
+			    SELECTEDVALUE(
+			        Heatmap[KPI],
+			        "Doanh thu thuần"
+			    )
+			
+			RETURN
+			SWITCH(
+			    SelectedKPI,
+			    "Doanh thu thuần", "Amount",
+			    "Lợi nhuận trước thuế", "Amount",
+			    "Tăng trưởng doanh thu", "Growth",
+			    "Tăng trưởng lợi nhuận", "Growth",
+			    "Amount"
+			)
+		lineageTag: f33757cd-6dde-4d31-bb98-08391b033c12
+
+	measure 'Heatmap Total Value' =
+			
+			VAR SelectedDetail =
+			    SELECTEDVALUE(DimPL[Chi tiết])
+			
+			VAR SelectedKPI =
+			    SELECTEDVALUE(
+			        Heatmap[KPI],
+			        "Doanh thu thuần"
+			    )
+			
+			VAR ValidAreas =
+			    CALCULATETABLE(
+			        VALUES(fact_finance[Area]),
+			        REMOVEFILTERS(fact_finance[Area])
+			    )
+			
+			VAR ValueByDetail =
+			    -CALCULATE(
+			        SUM(fact_finance[Trị giá]),
+			
+			        -- Bỏ filter khu vực từ Dimension
+			        REMOVEFILTERS(fact_finance[Area]),
+			
+			        -- Chỉ giữ các khu vực thực sự tồn tại trong dữ liệu tài chính
+			        TREATAS(
+			            ValidAreas,
+			            fact_finance[Area]
+			        ),
+			
+			        DATESBETWEEN(
+			            Calendar[Date],
+			            DATE(YEAR([MaxDate]), 1, 1),
+			            [MaxDate]
+			        ),
+			
+			        KEEPFILTERS(
+			            fact_finance[Diễn giải tài khoản] = SelectedDetail
+			        )
+			    ) / 10^9
+			
+			VAR ValueByKPI =
+			    SWITCH(
+			        SelectedKPI,
+			
+			        "Doanh thu thuần",
+			            CALCULATE(
+			                [Doanh thu thuần_TY],
+			                REMOVEFILTERS(
+			                    fact_finance[Area]
+			                ),
+			                TREATAS(
+			                    ValidAreas,
+			                    fact_finance[Area]
+			                )
+			            ),
+			
+			        "Lợi nhuận trước thuế",
+			            CALCULATE(
+			                [Lợi nhuận trước thuế (EBT)_TY],
+			                REMOVEFILTERS(
+			                    fact_finance[Area]
+			                ),
+			                TREATAS(
+			                    ValidAreas,
+			                    fact_finance[Area]
+			                )
+			            ),
+			
+			        "Tăng trưởng doanh thu",
+			            CALCULATE(
+			                [% Tăng trưởng Doanh thu thuần YTD],
+			                REMOVEFILTERS(
+			                    fact_finance[Area]
+			                ),
+			                TREATAS(
+			                    ValidAreas,
+			                    fact_finance[Area]
+			                )
+			            ),
+			
+			        "Tăng trưởng lợi nhuận",
+			            CALCULATE(
+			                [% Tăng trưởng Lợi nhuận gộp YTD],
+			                REMOVEFILTERS(
+			                    fact_finance[Area]
+			                ),
+			                TREATAS(
+			                    ValidAreas,
+			                    fact_finance[Area]
+			                )
+			            ),
+			
+			        BLANK()
+			    )
+			
+			RETURN
+			    IF(
+			        NOT ISBLANK(SelectedDetail),
+			        ValueByDetail,
+			        ValueByKPI
+			    )
+		lineageTag: cb60a209-1763-47d6-be33-694a346c17ec
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Heatmap Total Label' =
+			
+			VAR SelectedDetail =
+			    SELECTEDVALUE(DimPL[Chi tiết])
+			
+			VAR SelectedKPI =
+			    SELECTEDVALUE(
+			        Heatmap[KPI],
+			        "Doanh thu thuần"
+			    )
+			
+			VAR vValue =
+			    [Heatmap Total Value]
+			
+			RETURN
+			    IF(
+			        NOT ISBLANK(SelectedDetail),
+			
+			        FORMAT(vValue, "#,##0.00"),
+			
+			        SWITCH(
+			            SelectedKPI,
+			
+			            "Doanh thu thuần",
+			                FORMAT(vValue, "#,##0"),
+			
+			            "Lợi nhuận trước thuế",
+			                FORMAT(vValue, "#,##0.0"),
+			
+			            "Tăng trưởng doanh thu",
+			                SWITCH(
+			                    TRUE(),
+			                    ISBLANK(vValue), BLANK(),
+			                    vValue > 0,
+			                        "▲" & FORMAT(vValue, "0.0%"),
+			                    vValue < 0,
+			                        "▼" & FORMAT(ABS(vValue), "0.0%"),
+			                    "–"
+			                ),
+			
+			            "Tăng trưởng lợi nhuận",
+			                SWITCH(
+			                    TRUE(),
+			                    ISBLANK(vValue), BLANK(),
+			                    vValue > 0,
+			                        "▲" & FORMAT(vValue, "0.0%"),
+			                    vValue < 0,
+			                        "▼" & FORMAT(ABS(vValue), "0.0%"),
+			                    "–"
+			                ),
+			
+			            BLANK()
+			        )
+			    )
+		lineageTag: 5f0218d1-9fdf-4943-894c-e5154cb0bb6b
+
+	column KPI
+		lineageTag: 84a5650e-74ff-4e25-b090-3d6ddf2dd699
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [KPI]
+		sortByColumn: Sort
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sort
+		formatString: 0
+		lineageTag: 3397c50a-2e2d-4faa-9179-a83ff3a15f77
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Sort]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Heatmap = calculated
+		mode: import
+		source =
+				
+				DATATABLE(
+				    "KPI", STRING,
+				    "Sort", INTEGER,
+				    {
+				        {"Doanh thu thuần", 1},
+				        {"Lợi nhuận trước thuế", 2},
+				        {"Tăng trưởng doanh thu", 3},
+				        {"Tăng trưởng lợi nhuận", 4}
+				    }
+				)
+
+	annotation PBI_Id = 6edee89a3446436a86ac7f9094794fd7
+

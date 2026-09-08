@@ -1,0 +1,265 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "4491eebcdddcb03eb3ee",
+  "position": {
+    "x": 672,
+    "y": 1616,
+    "z": 8000,
+    "height": 304,
+    "width": 608,
+    "tabOrder": 2000
+  },
+  "visual": {
+    "visualType": "STANDALONEdeneb7E15AEF80B9E4D4F8E12924291ECE89A",
+    "query": {
+      "queryState": {
+        "dataset": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_finance"
+                    }
+                  },
+                  "Property": "Area"
+                }
+              },
+              "queryRef": "fact_finance.Area",
+              "nativeQueryRef": "Area"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_finance"
+                    }
+                  },
+                  "Property": "Concept"
+                }
+              },
+              "queryRef": "fact_finance.Concept",
+              "nativeQueryRef": "Concept"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Heatmap"
+                    }
+                  },
+                  "Property": "Heatmap Value"
+                }
+              },
+              "queryRef": "Heatmap.Heatmap Value",
+              "nativeQueryRef": "Heatmap Value"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Heatmap"
+                    }
+                  },
+                  "Property": "Heatmap Label"
+                }
+              },
+              "queryRef": "Heatmap.Heatmap Label",
+              "nativeQueryRef": "Heatmap Label"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Heatmap"
+                    }
+                  },
+                  "Property": "Heatmap Total Value"
+                }
+              },
+              "queryRef": "Heatmap.Heatmap Total Value",
+              "nativeQueryRef": "Heatmap Total Value"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Heatmap"
+                    }
+                  },
+                  "Property": "Heatmap Total Label"
+                }
+              },
+              "queryRef": "Heatmap.Heatmap Total Label",
+              "nativeQueryRef": "Heatmap Total Label"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "fact_finance"
+                  }
+                },
+                "Property": "Area"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "vega": [
+        {
+          "properties": {
+            "provider": {
+              "expr": {
+                "Literal": {
+                  "Value": "'vegaLite'"
+                }
+              }
+            },
+            "jsonSpec": {
+              "expr": {
+                "Literal": {
+                  "Value": "'{\n  \"$schema\": \"https://vega.github.io/schema/vega-lite/v5.json\",\n\n  \"data\": {\n    \"name\": \"dataset\"\n  },\n\n  \"width\": \"container\",\n  \"height\": \"container\",\n\n  \"transform\": [\n\n    {\n      \"calculate\": \"''Area''\",\n      \"as\": \"DataType\"\n    },\n\n    {\n      \"calculate\": \"datum[''Area'']\",\n      \"as\": \"XCategory\"\n    },\n\n    {\n      \"calculate\": \"datum[''Area''] === ''KV 1'' ? 1 : datum[''Area''] === ''KV 2'' ? 2 : datum[''Area''] === ''KV 3'' ? 3 : datum[''Area''] === ''KV 4'' ? 4 : datum[''Area''] === ''KV 5'' ? 5 : 99\",\n      \"as\": \"XSort\"\n    },\n\n    {\n      \"calculate\": \"datum[''Heatmap Value'']\",\n      \"as\": \"DisplayValue\"\n    },\n\n    {\n      \"calculate\": \"datum[''Heatmap Label'']\",\n      \"as\": \"DisplayLabel\"\n    },\n\n    {\n      \"calculate\": \"abs(datum[''Heatmap Value''])\",\n      \"as\": \"AbsValue\"\n    },\n\n    {\n      \"joinaggregate\": [\n        {\n          \"op\": \"max\",\n          \"field\": \"AbsValue\",\n          \"as\": \"MaxAbsValue\"\n        }\n      ]\n    },\n\n    {\n      \"calculate\": \"datum.MaxAbsValue === 0 || datum.MaxAbsValue == null ? 0 : datum[''Heatmap Value''] / datum.MaxAbsValue\",\n      \"as\": \"ColorRatio\"\n    },\n\n    {\n      \"calculate\": \"datum[''Heatmap Total Value'']\",\n      \"as\": \"TotalValue\"\n    },\n\n    {\n      \"calculate\": \"datum[''Heatmap Total Label'']\",\n      \"as\": \"TotalLabel\"\n    },\n\n    {\n      \"calculate\": \"''TỔNG''\",\n      \"as\": \"TotalXCategory\"\n    }\n  ],\n\n  \"encoding\": {\n\n    \"x\": {\n      \"field\": \"XCategory\",\n      \"type\": \"nominal\",\n\n      \"sort\": {\n        \"field\": \"XSort\",\n        \"op\": \"min\",\n        \"order\": \"ascending\"\n      },\n\n      \"scale\": {\n        \"paddingInner\": 0.08,\n        \"paddingOuter\": 0.02\n      },\n\n      \"axis\": {\n        \"orient\": \"top\",\n        \"title\": null,\n        \"labelAngle\": 0,\n        \"labelFontSize\": 14,\n        \"labelPadding\": 8,\n        \"domain\": false,\n        \"ticks\": false,\n        \"grid\": false\n      }\n    },\n\n    \"y\": {\n      \"field\": \"Concept\",\n      \"type\": \"nominal\",\n\n      \"sort\": [\n        \"Convenience\",\n        \"Mini Mart\",\n        \"Modern Grocery Store\",\n        \"Supermarket\"\n      ],\n\n      \"scale\": {\n        \"paddingInner\": 0.08,\n        \"paddingOuter\": 0.02\n      },\n\n      \"axis\": {\n        \"title\": null,\n        \"labelFontSize\": 14,\n        \"labelPadding\": 8,\n        \"domain\": false,\n        \"ticks\": false,\n        \"grid\": false\n      }\n    }\n  },\n\n  \"layer\": [\n\n    {\n      \"name\": \"Detail Cells\",\n\n      \"mark\": {\n        \"type\": \"rect\",\n        \"cornerRadius\": 4,\n        \"stroke\": \"white\",\n        \"strokeWidth\": 2\n      },\n\n      \"encoding\": {\n\n        \"color\": {\n          \"condition\": {\n            \"test\": \"!isValid(datum[''Heatmap Value''])\",\n            \"value\": \"#FFFFFF\"\n          },\n\n          \"field\": \"ColorRatio\",\n          \"type\": \"quantitative\",\n\n          \"scale\": {\n            \"domain\": [\n              -1,\n              0,\n              1\n            ],\n\n            \"range\": [\n              \"#C62828\",\n              \"#FFFFFF\",\n              \"#2E7D32\"\n            ]\n          },\n\n          \"legend\": null\n        },\n\n        \"tooltip\": [\n          {\n            \"field\": \"Concept\",\n            \"type\": \"nominal\",\n            \"title\": \"Concept\"\n          },\n\n          {\n            \"field\": \"Khu vực\",\n            \"type\": \"nominal\",\n            \"title\": \"Khu vực\"\n          },\n\n          {\n            \"field\": \"Heatmap Label\",\n            \"type\": \"nominal\",\n            \"title\": \"Giá trị\"\n          }\n        ]\n      }\n    },\n\n    {\n      \"name\": \"Detail Labels\",\n\n      \"mark\": {\n        \"type\": \"text\",\n        \"fontSize\": 14,\n        \"fontWeight\": \"bold\",\n        \"align\": \"center\",\n        \"baseline\": \"middle\"\n      },\n\n      \"transform\": [\n        {\n          \"filter\": \"isValid(datum[''Heatmap Label'']) && datum[''Heatmap Label''] !== ''''\"\n        }\n      ],\n\n      \"encoding\": {\n\n        \"text\": {\n          \"field\": \"Heatmap Label\",\n          \"type\": \"nominal\"\n        },\n\n        \"color\": {\n          \"condition\": [\n            {\n              \"test\": \"abs(datum.ColorRatio) >= 0.55\",\n              \"value\": \"white\"\n            }\n          ],\n\n          \"value\": \"black\"\n        }\n      }\n    },\n\n    {\n      \"name\": \"Total Cells\",\n\n      \"transform\": [\n\n        {\n          \"calculate\": \"datum[''Heatmap Total Value'']\",\n          \"as\": \"TotalValue\"\n        },\n\n        {\n          \"calculate\": \"datum[''Heatmap Total Label'']\",\n          \"as\": \"TotalLabel\"\n        },\n\n        {\n          \"calculate\": \"abs(datum[''Heatmap Total Value''])\",\n          \"as\": \"TotalAbsValue\"\n        },\n\n        {\n          \"joinaggregate\": [\n            {\n              \"op\": \"max\",\n              \"field\": \"TotalAbsValue\",\n              \"as\": \"MaxTotalAbsValue\"\n            }\n          ]\n        },\n\n        {\n          \"calculate\": \"datum.MaxTotalAbsValue === 0 || datum.MaxTotalAbsValue == null ? 0 : datum.TotalValue / datum.MaxTotalAbsValue\",\n          \"as\": \"TotalColorRatio\"\n        },\n\n        {\n          \"calculate\": \"''TỔNG''\",\n          \"as\": \"XCategory\"\n        },\n\n        {\n          \"calculate\": \"6\",\n          \"as\": \"XSort\"\n        },\n\n        {\n          \"aggregate\": [\n            {\n              \"op\": \"max\",\n              \"field\": \"TotalValue\",\n              \"as\": \"TotalValue\"\n            },\n\n            {\n              \"op\": \"max\",\n              \"field\": \"TotalLabel\",\n              \"as\": \"TotalLabel\"\n            },\n\n            {\n              \"op\": \"max\",\n              \"field\": \"TotalColorRatio\",\n              \"as\": \"TotalColorRatio\"\n            },\n\n            {\n              \"op\": \"max\",\n              \"field\": \"XSort\",\n              \"as\": \"XSort\"\n            }\n          ],\n\n          \"groupby\": [\n            \"Concept\",\n            \"XCategory\"\n          ]\n        }\n      ],\n\n      \"mark\": {\n        \"type\": \"rect\",\n        \"cornerRadius\": 4,\n        \"stroke\": \"white\",\n        \"strokeWidth\": 2\n      },\n\n      \"encoding\": {\n\n        \"x\": {\n          \"field\": \"XCategory\",\n          \"type\": \"nominal\",\n\n          \"sort\": {\n            \"field\": \"XSort\",\n            \"op\": \"min\",\n            \"order\": \"ascending\"\n          }\n        },\n\n        \"y\": {\n          \"field\": \"Concept\",\n          \"type\": \"nominal\",\n\n          \"sort\": [\n            \"Convenience\",\n            \"Mini Mart\",\n            \"Modern Grocery Store\",\n            \"Supermarket\"\n          ]\n        },\n\n        \"color\": {\n          \"condition\": {\n            \"test\": \"!isValid(datum.TotalValue)\",\n            \"value\": \"#FFFFFF\"\n          },\n\n          \"field\": \"TotalColorRatio\",\n          \"type\": \"quantitative\",\n\n          \"scale\": {\n            \"domain\": [\n              -1,\n              0,\n              1\n            ],\n\n            \"range\": [\n              \"#287E8F\",\n              \"#FFFFFF\",\n              \"#2E7D32\"\n            ]\n          },\n\n          \"legend\": null\n        },\n\n        \"tooltip\": [\n          {\n            \"field\": \"Concept\",\n            \"type\": \"nominal\",\n            \"title\": \"Concept\"\n          },\n\n          {\n            \"value\": \"TỔNG\",\n            \"title\": \"Khu vực\"\n          },\n\n          {\n            \"field\": \"TotalLabel\",\n            \"type\": \"nominal\",\n            \"title\": \"Giá trị\"\n          }\n        ]\n      }\n    },\n\n    {\n      \"name\": \"Total Labels\",\n\n      \"transform\": [\n\n        {\n          \"calculate\": \"datum[''Heatmap Total Value'']\",\n          \"as\": \"TotalValue\"\n        },\n\n        {\n          \"calculate\": \"datum[''Heatmap Total Label'']\",\n          \"as\": \"TotalLabel\"\n        },\n\n        {\n          \"calculate\": \"abs(datum[''Heatmap Total Value''])\",\n          \"as\": \"TotalAbsValue\"\n        },\n\n        {\n          \"joinaggregate\": [\n            {\n              \"op\": \"max\",\n              \"field\": \"TotalAbsValue\",\n              \"as\": \"MaxTotalAbsValue\"\n            }\n          ]\n        },\n\n        {\n          \"calculate\": \"datum.MaxTotalAbsValue === 0 || datum.MaxTotalAbsValue == null ? 0 : datum.TotalValue / datum.MaxTotalAbsValue\",\n          \"as\": \"TotalColorRatio\"\n        },\n\n        {\n          \"calculate\": \"''TỔNG''\",\n          \"as\": \"XCategory\"\n        },\n\n        {\n          \"calculate\": \"6\",\n          \"as\": \"XSort\"\n        },\n\n        {\n          \"aggregate\": [\n            {\n              \"op\": \"max\",\n              \"field\": \"TotalValue\",\n              \"as\": \"TotalValue\"\n            },\n\n            {\n              \"op\": \"max\",\n              \"field\": \"TotalLabel\",\n              \"as\": \"TotalLabel\"\n            },\n\n            {\n              \"op\": \"max\",\n              \"field\": \"TotalColorRatio\",\n              \"as\": \"TotalColorRatio\"\n            },\n\n            {\n              \"op\": \"max\",\n              \"field\": \"XSort\",\n              \"as\": \"XSort\"\n            }\n          ],\n\n          \"groupby\": [\n            \"Concept\",\n            \"XCategory\"\n          ]\n        },\n\n        {\n          \"filter\": \"isValid(datum.TotalLabel) && datum.TotalLabel !== ''''\"\n        }\n      ],\n\n      \"mark\": {\n        \"type\": \"text\",\n        \"fontSize\": 14,\n        \"fontWeight\": \"bold\",\n        \"align\": \"center\",\n        \"baseline\": \"middle\"\n      },\n\n      \"encoding\": {\n\n        \"x\": {\n          \"field\": \"XCategory\",\n          \"type\": \"nominal\",\n\n          \"sort\": {\n            \"field\": \"XSort\",\n            \"op\": \"min\",\n            \"order\": \"ascending\"\n          }\n        },\n\n        \"y\": {\n          \"field\": \"Concept\",\n          \"type\": \"nominal\",\n\n          \"sort\": [\n            \"Convenience\",\n            \"Mini Mart\",\n            \"Modern Grocery Store\",\n            \"Supermarket\"\n          ]\n        },\n\n        \"text\": {\n          \"field\": \"TotalLabel\",\n          \"type\": \"nominal\"\n        },\n\n        \"color\": {\n          \"condition\": [\n            {\n              \"test\": \"abs(datum.TotalColorRatio) >= 0.55\",\n              \"value\": \"white\"\n            }\n          ],\n\n          \"value\": \"black\"\n        }\n      }\n    }\n  ],\n\n  \"config\": {\n    \"view\": {\n      \"stroke\": null\n    },\n\n    \"axis\": {\n      \"domain\": false,\n      \"ticks\": false,\n      \"grid\": false\n    }\n  }\n}'"
+                }
+              }
+            },
+            "jsonConfig": {
+              "expr": {
+                "Literal": {
+                  "Value": "'{}'"
+                }
+              }
+            },
+            "enableTooltips": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "enableContextMenu": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "enableHighlight": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "enableSelection": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "selectionMaxDataPoints": {
+              "expr": {
+                "Literal": {
+                  "Value": "50D"
+                }
+              }
+            },
+            "selectionMode": {
+              "expr": {
+                "Literal": {
+                  "Value": "'simple'"
+                }
+              }
+            },
+            "version": {
+              "expr": {
+                "Literal": {
+                  "Value": "'6.4.1'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "stateManagement": [
+        {
+          "properties": {
+            "viewportHeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "294D"
+                }
+              }
+            },
+            "viewportWidth": {
+              "expr": {
+                "Literal": {
+                  "Value": "598D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "developer": [
+        {
+          "properties": {
+            "version": {
+              "expr": {
+                "Literal": {
+                  "Value": "'1.9.1.20260331#0615a47d'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

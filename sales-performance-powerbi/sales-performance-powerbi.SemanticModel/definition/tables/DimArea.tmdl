@@ -1,0 +1,22 @@
+table DimArea
+	lineageTag: 40249f99-6007-4fed-b0ce-1e1b483015c8
+
+	column Area
+		lineageTag: ad18c395-f203-41f2-868d-bc46ac1cab5a
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: fact_finance[Area]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimArea = calculated
+		mode: import
+		source =
+				
+				SUMMARIZE(
+				    fact_finance,
+				    fact_finance[Area]
+				)
+
+	annotation PBI_Id = 4782687bb963427ab857bec47440410e
+

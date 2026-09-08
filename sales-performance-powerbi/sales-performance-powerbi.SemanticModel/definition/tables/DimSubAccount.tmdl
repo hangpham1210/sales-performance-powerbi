@@ -1,0 +1,44 @@
+table DimSubAccount
+	lineageTag: 32d12f6e-f33c-49bf-a988-1f63a126527e
+
+	column 'Tiểu khoản'
+		formatString: 0
+		lineageTag: 52afb978-0842-43eb-9d4e-44c7a90e5d20
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Tiểu khoản]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Diễn giải tiểu khoản'
+		lineageTag: f7a5ceb1-ba37-4783-9493-ef1a87a9df6c
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Diễn giải tiểu khoản]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tài khoản'
+		formatString: 0
+		lineageTag: a7c65667-6eac-4f3f-a29d-e831187cc19c
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Tài khoản]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimSubAccount = calculated
+		mode: import
+		source =
+				
+				DISTINCT(
+				    SELECTCOLUMNS(
+				        fact_finance,
+				        "Tiểu khoản", fact_finance[Tiểu khoản],
+				        "Diễn giải tiểu khoản", fact_finance[Diễn giải tiểu khoản],
+				        "Tài khoản", fact_finance[Tài khoản]
+				    )
+				)
+
+	annotation PBI_Id = f86c1bac0382431693030cad22807dae
+

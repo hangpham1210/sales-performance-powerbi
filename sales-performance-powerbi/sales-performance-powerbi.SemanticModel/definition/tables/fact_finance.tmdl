@@ -1,0 +1,121 @@
+table fact_finance
+	lineageTag: 51fe79df-17d5-4e5c-a13c-14d1af8b57eb
+
+	column Concept
+		dataType: string
+		lineageTag: 6e96759f-fd5d-4d05-814e-0af71b643ab9
+		summarizeBy: none
+		sourceColumn: Concept
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tài khoản'
+		dataType: int64
+		formatString: 0
+		lineageTag: 62adfa01-47f9-4a3d-8593-e1ff2f388ef9
+		summarizeBy: sum
+		sourceColumn: Tài khoản
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Diễn giải tài khoản'
+		dataType: string
+		lineageTag: f74603eb-5469-4766-8524-c9dacca28ed3
+		summarizeBy: none
+		sourceColumn: Diễn giải tài khoản
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tiểu khoản'
+		dataType: int64
+		formatString: 0
+		lineageTag: 969877c6-e58a-4d5e-8d3d-6b0a3e21d894
+		summarizeBy: none
+		sourceColumn: Tiểu khoản
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Diễn giải tiểu khoản'
+		dataType: string
+		lineageTag: d4768f9c-49ec-404c-9998-bc77d67c4cdc
+		summarizeBy: none
+		sourceColumn: Diễn giải tiểu khoản
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: c7aef768-aaf5-466b-8221-6b79cf643bc0
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Trị giá'
+		dataType: double
+		lineageTag: 674076f2-9cb0-49e6-b9fd-724e8b05686d
+		summarizeBy: sum
+		sourceColumn: Trị giá
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column StoreID
+		dataType: string
+		lineageTag: 73920c37-bed3-4763-a530-bada85cb0a34
+		summarizeBy: none
+		sourceColumn: StoreID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Area
+		dataType: string
+		lineageTag: bf3cce86-eff3-4d31-96e3-989eeaf935f9
+		summarizeBy: none
+		sourceColumn: Area
+
+		annotation SummarizationSetBy = Automatic
+
+	column StoreName
+		dataType: string
+		lineageTag: 2fe7fed7-3493-4cc7-938c-eecda2cc4297
+		summarizeBy: none
+		sourceColumn: StoreName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: 8d597402-5b00-42dc-9cac-5e8f4ece094d
+		summarizeBy: sum
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_finance = m
+		mode: import
+		source =
+				let
+				    Source = let
+				    Source = Parquet.Document(
+				        File.Contents("C:\Users\phamt\Documents\sales-performance-powerbi\data\fact-finance_dummy.parquet")
+				    )
+				
+				in
+				    Source,
+				    #"Filtered Rows" = Table.SelectRows(Source, each true),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Filtered Rows",{{"Date", type date}}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Changed Type","Convenience","Convenience Store",Replacer.ReplaceText,{"Concept"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Replaced Value",{{"Nam", "Year"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

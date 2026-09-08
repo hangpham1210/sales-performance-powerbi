@@ -1,0 +1,32 @@
+table DimAccount
+	lineageTag: 6cd2f952-09ac-43cd-a80a-055df29e709c
+
+	column 'Tài khoản'
+		formatString: 0
+		lineageTag: 6f627b04-0dbb-482c-bd4a-d6e220c5307b
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: fact_finance[Tài khoản]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Diễn giải tài khoản'
+		lineageTag: 77173fd8-81a8-4862-9929-799e2b0dde42
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: fact_finance[Diễn giải tài khoản]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimAccount = calculated
+		mode: import
+		source =
+				
+				SUMMARIZE(
+				    fact_finance,
+				    fact_finance[Tài khoản],
+				    fact_finance[Diễn giải tài khoản]
+				)
+
+	annotation PBI_Id = 35ede59182b040e7ae6e91cec0aece90
+

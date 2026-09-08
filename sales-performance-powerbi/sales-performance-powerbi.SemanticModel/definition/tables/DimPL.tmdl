@@ -1,0 +1,436 @@
+table DimPL
+	lineageTag: 81061814-5d04-4d0a-bf5f-6d5c6d33ee98
+
+	measure 'Giá trị' =
+			
+			SUM(fact_finance[Trị giá])
+		lineageTag: 7928219e-8aaf-4b39-87aa-d08318d460bd
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Giá trị Account' =
+			
+			[Giá trị]
+		lineageTag: e284aa37-cdea-4dab-b45a-d031ce5b7012
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Giá trị P&L_TY' =
+			
+			VAR _STT =
+			    SELECTEDVALUE(DimPL[STT])
+			
+			VAR _STTChiTiet =
+			    SELECTEDVALUE(DimPL[STT Chi tiết])
+			
+			VAR _ChiTiet =
+			    SELECTEDVALUE(DimPL[Chi tiết])
+			
+			VAR _Nhom =
+			    SELECTEDVALUE(DimPL[Nhóm])
+			
+			VAR _TaiKhoan =
+			    COALESCE(
+			        SELECTEDVALUE(DimSubAccount[Tài khoản]),
+			        SELECTEDVALUE(DimPL[Tài khoản])
+			    )
+			
+			VAR _TaiKhoans =
+			    VALUES(DimSubAccount[Tài khoản])
+			
+			VAR _TaiKhoansTheoChiTiet =
+			    FILTER(
+			        _TaiKhoans,
+			        VAR _TaiKhoanHienTai = DimSubAccount[Tài khoản]
+			        RETURN
+			            ISBLANK(_ChiTiet)
+			                && ISBLANK(_Nhom)
+			                || CALCULATE(
+			                    COUNTROWS(DimPL),
+			                    FILTER(
+			                        ALL(DimPL),
+			                        (ISBLANK(_ChiTiet) || DimPL[Chi tiết] = _ChiTiet)
+			                            && (ISBLANK(_Nhom) || DimPL[Nhóm] = _Nhom)
+			                            && NOT ISBLANK(DimPL[Tài khoản])
+			                            && VALUE(DimPL[Tài khoản]) = _TaiKhoanHienTai
+			                    )
+			                ) > 0
+			    )
+			
+			VAR _IsSubAccount =
+			    HASONEVALUE(DimSubAccount[Diễn giải tiểu khoản])
+			        && COUNTROWS(_TaiKhoans) > 0
+			
+			VAR _IsValidAccountForDetail =
+			    NOT _IsSubAccount
+			        || (
+			            ISBLANK(_ChiTiet)
+			                && ISBLANK(_Nhom)
+			        )
+			        || (
+			            CALCULATE(
+			                COUNTROWS(DimPL),
+			                FILTER(
+			                    ALL(DimPL),
+			                    (ISBLANK(_ChiTiet) || DimPL[Chi tiết] = _ChiTiet)
+			                        && (ISBLANK(_Nhom) || DimPL[Nhóm] = _Nhom)
+			                        && NOT ISBLANK(DimPL[Tài khoản])
+			                        && CONTAINS(
+			                            _TaiKhoans,
+			                            DimSubAccount[Tài khoản],
+			                            VALUE(DimPL[Tài khoản])
+			                        )
+			                )
+			            ) > 0
+			        )
+			
+			VAR _IsBlankDetail =
+			    ISINSCOPE(DimPL[Chi tiết])
+			        && ISBLANK(
+			            SELECTEDVALUE(DimPL[Chi tiết])
+			        )
+			
+			VAR _MaxDate =
+			    [MaxDate]
+			
+			VAR _StartDate =
+			    DATE(
+			        YEAR(_MaxDate),
+			        1,
+			        1
+			    )
+			
+			VAR _GiaTriChiTiet =
+			    -CALCULATE(
+			        SUM(fact_finance[Trị giá]),
+			        DATESBETWEEN(
+			            Calendar[Date],
+			            _StartDate,
+			            _MaxDate
+			        ),
+			        TREATAS(
+			            _TaiKhoansTheoChiTiet,
+			            fact_finance[Tài khoản]
+			        )
+			    ) / 10^9
+			
+			VAR _GiaTri =
+			    SWITCH(
+			        TRUE(),
+			
+			        -- Ẩn dòng Chi tiết trống
+			        _IsBlankDetail && NOT _IsSubAccount,
+			            BLANK(),
+			
+			        _IsSubAccount,
+			            _GiaTriChiTiet,
+			
+			        -- Dòng Chi tiết
+			        _STTChiTiet > 0,
+			            _GiaTriChiTiet,
+			
+			        -- Doanh thu thuần
+			        _STT = 1,
+			            [Doanh thu thuần_TY],
+			
+			        -- Giá vốn hàng bán
+			        _STT = 2,
+			            [Giá vốn hàng bán_TY],
+			
+			        -- Lợi nhuận gộp
+			        _STT = 3,
+			            [Lợi nhuận gộp_TY],
+			
+			        -- Chi phí hoạt động
+			        _STT = 4,
+			            [Chi phí hoạt động_TY],
+			
+			        -- Lợi nhuận hoạt động
+			        _STT = 5,
+			            [Lợi nhuận hoạt động (EBIT)_TY],
+			
+			        -- Chi phí tài chính và chi phí khác
+			        _STT = 6,
+			            [Chi phí Tài chính & Chi phí khác_TY],
+			
+			        -- Doanh thu tài chính và thu nhập khác
+			        _STT = 7,
+			            [Doanh thu Tài chính & Thu nhập khác_TY],
+			
+			        -- Lợi nhuận trước thuế
+			        _STT = 8,
+			            [Lợi nhuận trước thuế (EBT)_TY],
+			
+			        BLANK()
+			    )
+			
+			RETURN
+			    IF(
+			        NOT _IsValidAccountForDetail,
+			        BLANK(),
+			        IF(
+			            NOT ISBLANK(_GiaTri)
+			            && ABS(_GiaTri) < 0.01,
+			            BLANK(),
+			            _GiaTri
+			        )
+			    )
+		lineageTag: 2de2b277-6717-4f4f-99b1-5bd2a929ee0b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Giá trị P&L_LY' =
+			
+			VAR _STT =
+			    SELECTEDVALUE(DimPL[STT])
+			
+			VAR _STTChiTiet =
+			    SELECTEDVALUE(DimPL[STT Chi tiết])
+			
+			VAR _TaiKhoan =
+			    SELECTEDVALUE(DimPL[Tài khoản])
+			
+			VAR _IsBlankDetail =
+			    ISINSCOPE(DimPL[Chi tiết])
+			        && ISBLANK(
+			            SELECTEDVALUE(DimPL[Chi tiết])
+			        )
+			
+			VAR _MaxDate =
+			    [MaxDate]
+			
+			VAR _EndDate =
+			    EDATE(
+			        _MaxDate,
+			        -12
+			    )
+			
+			VAR _StartDate =
+			    DATE(
+			        YEAR(_EndDate),
+			        1,
+			        1
+			    )
+			
+			VAR _GiaTriChiTiet =
+			    -CALCULATE(
+			        SUM(fact_finance[Trị giá]),
+			        DATESBETWEEN(
+			            Calendar[Date],
+			            _StartDate,
+			            _EndDate
+			        ),
+			        TREATAS(
+			            {_TaiKhoan},
+			            DimAccount[Tài khoản]
+			        )
+			    ) / 10^9
+			
+			VAR _GiaTri =
+			    SWITCH(
+			        TRUE(),
+			
+			        -- Ẩn dòng Chi tiết trống
+			        _IsBlankDetail,
+			            BLANK(),
+			
+			        -- Dòng Chi tiết
+			        _STTChiTiet > 0,
+			            _GiaTriChiTiet,
+			
+			        -- Doanh thu thuần
+			        _STT = 1,
+			            [Doanh thu thuần_LY],
+			
+			        -- Giá vốn hàng bán
+			        _STT = 2,
+			            [Giá vốn hàng bán_LY],
+			
+			        -- Lợi nhuận gộp
+			        _STT = 3,
+			            [Lợi nhuận gộp_LY],
+			
+			        -- Chi phí hoạt động
+			        _STT = 4,
+			            [Chi phí hoạt động_LY],
+			
+			        -- Lợi nhuận hoạt động
+			        _STT = 5,
+			            [Lợi nhuận hoạt động (EBIT)_LY],
+			
+			        -- Chi phí tài chính và chi phí khác
+			        _STT = 6,
+			            [Chi phí Tài chính & Chi phí khác_LY],
+			
+			        -- Doanh thu tài chính và thu nhập khác
+			        _STT = 7,
+			            [Doanh thu Tài chính & Thu nhập khác_LY],
+			
+			        -- Lợi nhuận trước thuế
+			        _STT = 8,
+			            [Lợi nhuận trước thuế (EBT)_LY],
+			
+			        BLANK()
+			    )
+			
+			RETURN
+			    IF(
+			        NOT ISBLANK(_GiaTri)
+			            && ABS(_GiaTri) < 0.01,
+			        BLANK(),
+			        _GiaTri
+			    )
+		lineageTag: b57cd87a-bae2-4694-ad4a-9c3387df5732
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '% Tăng trưởng so CK' =
+			
+			DIVIDE(
+			    [Giá trị P&L_TY] - [Giá trị P&L_LY],
+			    [Giá trị P&L_LY],
+			    BLANK()
+			)
+		lineageTag: 286db956-b31c-4424-8dc4-45b96926dc77
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Hiển thị P&L' =
+			
+			VAR _GiaTri =
+			    [Giá trị P&L_TY]
+			
+			VAR _IsDetail =
+			    ISINSCOPE(DimPL[Chi tiết])
+			
+			VAR _IsBlankDetail =
+			    _IsDetail
+			        && ISBLANK(
+			            SELECTEDVALUE(DimPL[Chi tiết])
+			        )
+			
+			RETURN
+			SWITCH(
+			    TRUE(),
+			
+			    -- Không hiển thị dòng Chi tiết trống
+			    _IsBlankDetail,
+			        0,
+			
+			    -- Dòng Chỉ tiêu: luôn hiển thị
+			    NOT _IsDetail,
+			        1,
+			
+			    -- Dòng Chi tiết: chỉ hiển thị khi khác 0
+			    NOT ISBLANK(_GiaTri)
+			        && _GiaTri <> 0,
+			        1,
+			
+			    0
+			)
+		formatString: 0
+		lineageTag: d0102364-7cb7-4215-a264-02286d27fecd
+
+	measure '+/- Giá trị so CK' = [Giá trị P&L_TY] - [Giá trị P&L_LY]
+		lineageTag: 89b1ce2a-fdb8-4c1e-8b45-4438a1bcc941
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Empty Bar' = BLANK()
+		formatString: 0
+		lineageTag: 0624c7e6-0ca8-41f0-8326-9fbe9d0a809f
+
+	column STT
+		formatString: 0
+		lineageTag: 176b3a82-080f-488a-ba21-fdd4d4881790
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [STT]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'STT Chi tiết'
+		formatString: 0
+		lineageTag: 36b67f1e-5508-4db4-ba69-9311e6e8f444
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [STT Chi tiết]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Chỉ tiêu'
+		lineageTag: 0a3f2847-e685-4df0-a9b1-fda52980890b
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Chỉ tiêu]
+		sortByColumn: STT
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tài khoản'
+		lineageTag: f777f6d7-63de-4ad6-affa-fc392132b858
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Tài khoản]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Chi tiết'
+		lineageTag: 4ffa14e0-2831-438a-a645-0b86b6cbd3c5
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Chi tiết]
+		sortByColumn: 'STT Chi tiết'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nhóm
+		lineageTag: 6d34e60c-e2bf-42d5-afbc-7b542147f01c
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Nhóm]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimPL = calculated
+		mode: import
+		source =
+				
+				DATATABLE(
+				    "STT", INTEGER,
+				    "STT Chi tiết", INTEGER,
+				    "Chỉ tiêu", STRING,
+				    "Chi tiết", STRING,
+				    "Tài khoản", STRING,
+				    "Nhóm", STRING,
+				    {
+				        {1, 0, "Doanh thu thuần", BLANK(), BLANK(), "Doanh thu"},
+				        {1, 1, "Doanh thu thuần", "Doanh thu bán hàng & cung cấp dịch vụ", "511", "Doanh thu"},
+				        {1, 2, "Doanh thu thuần", "Doanh thu bán hàng nội bộ", "512", "Doanh thu"},
+				        {1, 3, "Doanh thu thuần", "Các khoản giảm trừ doanh thu", "521", "Doanh thu"},
+				
+				        {2, 0, "Giá vốn hàng bán", BLANK(), "632", "Giá vốn hàng bán"},
+				
+				        {3, 0, "Lợi nhuận gộp", BLANK(), BLANK(), "Lợi nhuận"},
+				
+				        {4, 0, "Chi phí hoạt động", BLANK(), BLANK(), "Chi phí"},
+				        {4, 1, "Chi phí hoạt động", "Chi phí bán hàng", "641", "Chi phí"},
+				        {4, 2, "Chi phí hoạt động", "Chi phí quản lý doanh nghiệp", "642", "Chi phí"},
+				        {4, 3, "Chi phí hoạt động", "Chi phí sử dụng máy thi công", "623", "Chi phí"},
+				
+				        {5, 0, "Lợi nhuận hoạt động", BLANK(), BLANK(), "Lợi nhuận"},
+				
+				        {6, 0, "Chi phí Tài chính và Thu nhập khác", BLANK(), BLANK(), "Chi phí"},
+				        {6, 1, "Chi phí Tài chính và Thu nhập khác", "Chi phí tài chính", "635", "Chi phí"},
+				        {6, 2, "Chi phí Tài chính và Thu nhập khác", "Chi phí khác", "811", "Chi phí"},
+				
+				        {7, 0, "Doanh thu tài chính và Thu nhập khác", BLANK(), BLANK(), "Doanh thu"},
+				        {7, 1, "Doanh thu tài chính và Thu nhập khác", "Doanh thu hoạt động tài chính", "515", "Doanh thu"},
+				        {7, 2, "Doanh thu tài chính và Thu nhập khác", "Thu nhập khác", "711", "Doanh thu"},
+				
+				        {8, 0, "Lợi nhuận trước thuế", BLANK(), BLANK(), "Lợi nhuận"}
+				    }
+				)
+
+	annotation PBI_Id = 43965629e8e94967a83e6ff49feb3888
+

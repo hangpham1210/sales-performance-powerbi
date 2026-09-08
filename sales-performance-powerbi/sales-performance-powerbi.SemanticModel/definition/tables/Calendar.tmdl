@@ -1,0 +1,186 @@
+table Calendar
+	lineageTag: 42382134-9cac-446e-b4b7-335ff12caf74
+	dataCategory: Time
+
+	measure 'Has Data TY' =
+			
+			VAR MaxDate = [MaxDate]
+			VAR CurrentYear =
+			    MAX(Calendar[Year])
+			VAR CurrentMonth =
+			    MAX(Calendar[Month No])
+			VAR MaxYear =
+			    YEAR(MaxDate)
+			VAR MaxMonth =
+			    MONTH(MaxDate)
+			
+			RETURN
+			IF(
+			    CurrentYear < MaxYear
+			        || (
+			            CurrentYear = MaxYear
+			            && CurrentMonth <= MaxMonth
+			        ),
+			    1,
+			    0
+			)
+		formatString: 0
+		lineageTag: 6a508824-0dab-4774-8ba1-9f30b63e1a50
+
+	column Date
+		isKey
+		formatString: General Date
+		lineageTag: f859afca-fb05-4016-99bc-294981fa942c
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		formatString: 0
+		lineageTag: 437fd517-ab6b-41fc-8698-98bf670163d8
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month No'
+		formatString: 0
+		lineageTag: fded0cc9-056a-4b57-8d9a-9ecb96c39ea3
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Month No]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		lineageTag: a882bdef-0048-4c0d-9127-3e5a9f05233f
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month]
+		sortByColumn: 'Month No'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Short'
+		lineageTag: 411d1f30-719b-4dc1-af05-61d9a32e0717
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month Short]
+		sortByColumn: 'Month No'
+
+		annotation SummarizationSetBy = Automatic
+
+	column YearMonth
+		lineageTag: 57756743-3f23-4ef4-bff3-2f5634ba8942
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [YearMonth]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'YearMonth Sort'
+		formatString: 0
+		lineageTag: 5c146ed0-7207-4ceb-9a39-6c78f64fdc9f
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [YearMonth Sort]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		lineageTag: f80e80ca-20e6-48ae-a702-efdee6994644
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Quarter]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Week
+		formatString: 0
+		lineageTag: 7b013eca-f1b8-4081-a48f-e3d07e7d41a9
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Week]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Day
+		formatString: 0
+		lineageTag: bf8d1400-d9e7-4304-b1ee-9136cb92c0f8
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Day]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Day Name'
+		lineageTag: 6114fd4f-0337-4f40-ac08-6709adb87057
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Day Name]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Year'
+		lineageTag: c0b5c9f9-d92a-4a33-874d-6c36bbdb9386
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthKey
+		lineageTag: fb6d50a2-152a-438c-be8e-607085e03655
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [MonthKey]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Is Current Year' =
+			
+			VAR _MaxDate = 'Measure'[MaxDate]
+			RETURN
+			    IF(
+			        YEAR(Calendar[Date]) = YEAR(_MaxDate),
+			        1,
+			        0
+			    )
+		formatString: 0
+		lineageTag: cdc886b3-cec1-4eec-a687-0824cbf06e8a
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Calendar = calculated
+		mode: import
+		source =
+				
+				VAR MinDate =
+				    DATE(YEAR(MIN(fact_finance[Date])), 1, 1)
+				
+				VAR MaxDate =
+				    DATE(YEAR(MAX(fact_finance[Date])), 12, 31)
+				
+				RETURN
+				ADDCOLUMNS(
+				    CALENDAR(MinDate, MaxDate),
+				    "Year", YEAR([Date]),
+				    "Month No", MONTH([Date]),
+				    "Month", FORMAT([Date], "MMMM"),
+				    "Month Short", FORMAT([Date], "MMM"),
+				    "MonthKey", FORMAT([Date], "YYMM"),
+				    "YearMonth", FORMAT([Date], "YYYY-MM"),
+				    "YearMonth Sort", YEAR([Date]) * 100 + MONTH([Date]),
+				    "Quarter", "Q" & QUARTER([Date]),
+				    "Week", WEEKNUM([Date], 2),
+				    "Day", DAY([Date]),
+				    "Day Name", FORMAT([Date], "dddd"),
+				    "Month Year", FORMAT([Date], "MMM yyyy")
+				)
+
+	annotation PBI_Id = 60aa8b3299b54ba082c71f4c40658ccb
+

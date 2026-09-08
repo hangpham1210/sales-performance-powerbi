@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "sales-performance-powerbi"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "35355027-0b11-4080-b1e9-6a974b438e66"
+  }
+}

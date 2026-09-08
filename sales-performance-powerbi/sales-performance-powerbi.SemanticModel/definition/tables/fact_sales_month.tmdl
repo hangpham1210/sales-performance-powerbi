@@ -1,0 +1,93 @@
+table fact_sales_month
+	lineageTag: 42b73753-ea11-4aed-a464-45e4b0ecbcdc
+
+	column StoreId
+		dataType: string
+		lineageTag: a54a5c90-ea77-4c28-add9-1e95ed79455f
+		summarizeBy: none
+		sourceColumn: StoreId
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthKey
+		dataType: int64
+		formatString: 0
+		lineageTag: e64dc743-a4ea-4589-8faf-feac426fe189
+		summarizeBy: none
+		sourceColumn: MonthKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sku
+		dataType: int64
+		formatString: 0
+		lineageTag: 5cd45547-ac60-4556-b70d-4f7c0c056530
+		summarizeBy: none
+		sourceColumn: Sku
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quantity
+		dataType: int64
+		formatString: 0
+		lineageTag: 0b6eb8d5-00c5-4a9c-ab19-6b5562ee4569
+		summarizeBy: sum
+		sourceColumn: Quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cost
+		dataType: double
+		lineageTag: 0f279233-6329-4f19-8f03-622a08aedb49
+		summarizeBy: sum
+		sourceColumn: Cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column SalesNoVat
+		dataType: double
+		lineageTag: a7062d31-d13d-4ceb-b876-08a5982c17f8
+		summarizeBy: sum
+		sourceColumn: SalesNoVat
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Concept
+		dataType: string
+		lineageTag: 556d560e-c37b-4354-a7e7-20a313472b4d
+		summarizeBy: none
+		sourceColumn: Concept
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: 12c7e0a5-faac-4384-b048-f24d745453bd
+		summarizeBy: sum
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_sales_month = m
+		mode: import
+		source =
+				let
+				    Source = let
+				    Source = Parquet.Document(
+				        File.Contents("C:\Users\phamt\Documents\sales-performance-powerbi\data\fact-salesbysku_dummy.parquet")
+				    )
+				in
+				    Source,
+				    #"Renamed Columns" = Table.RenameColumns(Source,{{"Month", "MonthKey"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

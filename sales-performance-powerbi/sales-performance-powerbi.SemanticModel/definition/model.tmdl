@@ -1,0 +1,33 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["fact_sales_month","dim_store","fact_finance","dim_sku"]
+
+annotation __TEdtr = 1
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table Measure
+ref table Calendar
+ref table Heatmap
+ref table DimAccount
+ref table DimPL
+ref table DimSubAccount
+ref table dim_store
+ref table fact_sales_month
+ref table fact_finance
+ref table _measures
+ref table dim_sku
+ref table DimMonth
+ref table DimArea
+ref table DimConcept
+
+ref cultureInfo en-US
+

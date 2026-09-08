@@ -1,0 +1,22 @@
+table DimConcept
+	lineageTag: 5610726a-216b-48c5-9c27-35b0677df9f7
+
+	column Concept
+		lineageTag: 4036e290-1e2f-4361-a463-c74867a80b9e
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: fact_finance[Concept]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimConcept = calculated
+		mode: import
+		source =
+				
+				SUMMARIZE(
+				    fact_finance,
+				    fact_finance[Concept]
+				)
+
+	annotation PBI_Id = f38c8da21ac248e89467edb089f20eee
+
