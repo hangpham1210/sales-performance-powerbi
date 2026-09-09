@@ -13,11 +13,11 @@ Dashboard cung cấp góc nhìn tổng quan về hiệu quả kinh doanh và tà
 
 - **Trang 1 - Tổng quan tình hình kinh doanh & tài chính**: Theo dõi các chỉ tiêu chính về tình hình kinh doanh và hiệu quả tài chính. 
 
-![Trang 1: Tổng quan tình hình kinh doanh & tài chính](assets/dashboard-preview-1.png)
+<img src="assets/dashboard-preview-1.png" alt="Trang 1: Tổng quan tình hình kinh doanh & tài chính" width="66%" />
 
 - **Trang 2 - Phân tích chi tiết theo Mô hình & Khu vực**: Xem chi tiết kết quả hoạt động từ khu vực/đơn vị đến ngành hàng, nhóm hàng và SKU; đồng thời theo dõi doanh thu, chi phí và hiệu quả tài chính theo thời gian.
 
-![Trang 2: Phân tích chi tiết theo Mô hình & Khu vực](assets/dashboard-preview-2.png)
+<img src="assets/dashboard-preview-2.png" alt="Trang 2: Phân tích chi tiết theo Mô hình & Khu vực" width="66%" />
 
 ## 🎯 Mục tiêu
 
