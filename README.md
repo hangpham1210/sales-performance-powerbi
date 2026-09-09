@@ -9,6 +9,10 @@ Dashboard cung cấp góc nhìn tổng quan về hiệu quả kinh doanh và tà
 * **Direct Download:** [Download sales-performance-powerbi.pbix](./sales-performance-powerbi.pbix)
 * **Status:** Public Portfolio Project
 
+### Demo GIF
+
+<img src="assets/demo-dashboard.gif" alt="Demo dashboard GIF" width="66%" />
+
 ## Các trang báo cáo
 
 - **Trang 1 - Tổng quan tình hình kinh doanh & tài chính**: Theo dõi các chỉ tiêu chính về tình hình kinh doanh và hiệu quả tài chính. 
@@ -19,9 +23,6 @@ Dashboard cung cấp góc nhìn tổng quan về hiệu quả kinh doanh và tà
 
 <img src="assets/dashboard-preview-2.png" alt="Trang 2: Phân tích chi tiết theo Mô hình & Khu vực" width="66%" />
 
-### Demo GIF
-
-<img src="assets/demo-dashboard.gif" alt="Demo dashboard GIF" width="66%" />
 
 ## 🎯 Mục tiêu
 
@@ -41,6 +42,32 @@ Dashboard cung cấp góc nhìn tổng quan về hiệu quả kinh doanh và tà
 | **Power Query** | Nạp, làm sạch và biến đổi dữ liệu trước khi mô hình hóa. |
 | **Parquet, Excel** | Là nguồn dữ liệu mẫu trong quá trình demo và phát triển. |
 | **Deneb** | Dùng cho một số trực quan hóa tùy chỉnh trong báo cáo. |
+
+
+## 📦 Mô hình dữ liệu
+
+| Bảng | Mô tả |
+|---|---|
+| `fact_finance` | Dữ liệu tài chính theo ngày, tài khoản, tiểu khoản, cửa hàng, khu vực và năm; chứa các trường như `Concept`, `Tài khoản`, `Tiểu khoản`, `Date`, `Trị giá`, `StoreID`, `Area`, `StoreName`, `Year`. |
+| `fact_sales_month` | Dữ liệu bán hàng theo tháng, SKU và cửa hàng; chứa `StoreId`, `MonthKey`, `Sku`, `Quantity`, `Cost`, `SalesNoVat`, `Concept`, `Year`. |
+| `dim_store` | Thông tin cửa hàng như `Store ID`, `Store Name`, `Area`, `Address`, `Latitude`, `Longitude`, `Store Status`. |
+| `dim_sku` | Thông tin SKU, ngành hàng, nhóm hàng và mã ngành hàng. |
+| `Calendar`, `DimMonth` | Các chiều thời gian phục vụ phân tích theo ngày, tháng và năm. |
+| `DimAccount`, `DimSubAccount`, `DimPL` | Hệ thống tài khoản và phân loại báo cáo kết quả kinh doanh. |
+| `DimArea`, `DimConcept` | Các chiều khu vực và mô hình/khái niệm kinh doanh. |
+| `Measure`, `_measures` | Các measure và chỉ tiêu KPI dùng trong báo cáo. |
+| `Heatmap` | Bảng hỗ trợ trực quan hóa heatmap trong báo cáo. |
+
+## 📑 Dữ liệu mẫu
+
+Dữ liệu mẫu hiện đang nằm trong thư mục `data/` và được các partition trong semantic model đọc trực tiếp từ các file local hiện tại:
+
+- `fact-finance_dummy.parquet`: dữ liệu tài chính mẫu.
+- `fact-salesbysku_dummy.parquet`: dữ liệu bán hàng theo SKU và tháng mẫu.
+- `store.xlsx`: dữ liệu tham chiếu cửa hàng.
+- `sku.xlsx`: dữ liệu tham chiếu SKU, ngành hàng và nhóm hàng.
+
+Lưu ý: các `File.Contents(...)` trong TMDL đang dùng đường dẫn local của máy hiện tại (ví dụ `C:\Users\xxx\Documents\...` hoặc `C:\Users\xxx\Documents\sales-performance-powerbi\data\...`), nên khi chuyển project sang môi trường/máy khác cần cập nhật lại đường dẫn tương ứng hoặc thay bằng nguồn dữ liệu phù hợp.
 
 ## 📂 Cấu trúc project
 
@@ -77,31 +104,6 @@ Dashboard cung cấp góc nhìn tổng quan về hiệu quả kinh doanh và tà
 │       └── ...
 └── .git/
 ```
-
-## 📦 Mô hình dữ liệu
-
-| Bảng | Mô tả |
-|---|---|
-| `fact_finance` | Dữ liệu tài chính theo ngày, tài khoản, tiểu khoản, cửa hàng, khu vực và năm; chứa các trường như `Concept`, `Tài khoản`, `Tiểu khoản`, `Date`, `Trị giá`, `StoreID`, `Area`, `StoreName`, `Year`. |
-| `fact_sales_month` | Dữ liệu bán hàng theo tháng, SKU và cửa hàng; chứa `StoreId`, `MonthKey`, `Sku`, `Quantity`, `Cost`, `SalesNoVat`, `Concept`, `Year`. |
-| `dim_store` | Thông tin cửa hàng như `Store ID`, `Store Name`, `Area`, `Address`, `Latitude`, `Longitude`, `Store Status`. |
-| `dim_sku` | Thông tin SKU, ngành hàng, nhóm hàng và mã ngành hàng. |
-| `Calendar`, `DimMonth` | Các chiều thời gian phục vụ phân tích theo ngày, tháng và năm. |
-| `DimAccount`, `DimSubAccount`, `DimPL` | Hệ thống tài khoản và phân loại báo cáo kết quả kinh doanh. |
-| `DimArea`, `DimConcept` | Các chiều khu vực và mô hình/khái niệm kinh doanh. |
-| `Measure`, `_measures` | Các measure và chỉ tiêu KPI dùng trong báo cáo. |
-| `Heatmap` | Bảng hỗ trợ trực quan hóa heatmap trong báo cáo. |
-
-## 📑 Dữ liệu mẫu
-
-Dữ liệu mẫu hiện đang nằm trong thư mục `data/` và được các partition trong semantic model đọc trực tiếp từ các file local hiện tại:
-
-- `fact-finance_dummy.parquet`: dữ liệu tài chính mẫu.
-- `fact-salesbysku_dummy.parquet`: dữ liệu bán hàng theo SKU và tháng mẫu.
-- `store.xlsx`: dữ liệu tham chiếu cửa hàng.
-- `sku.xlsx`: dữ liệu tham chiếu SKU, ngành hàng và nhóm hàng.
-
-Lưu ý: các `File.Contents(...)` trong TMDL đang dùng đường dẫn local của máy hiện tại (ví dụ `C:\Users\xxx\Documents\...` hoặc `C:\Users\xxx\Documents\sales-performance-powerbi\data\...`), nên khi chuyển project sang môi trường/máy khác cần cập nhật lại đường dẫn tương ứng hoặc thay bằng nguồn dữ liệu phù hợp.
 
 ## 🚀 Cách sử dụng
 
