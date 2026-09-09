@@ -19,6 +19,10 @@ Dashboard cung cấp góc nhìn tổng quan về hiệu quả kinh doanh và tà
 
 <img src="assets/dashboard-preview-2.png" alt="Trang 2: Phân tích chi tiết theo Mô hình & Khu vực" width="66%" />
 
+### Demo GIF
+
+<img src="assets/demo-dashboard.gif" alt="Demo dashboard GIF" width="66%" />
+
 ## 🎯 Mục tiêu
 
 - Tổng hợp dữ liệu tài chính và bán hàng trên một mô hình dữ liệu thống nhất.
