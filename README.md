@@ -9,10 +9,17 @@ Dashboard cung cấp góc nhìn tổng quan về hiệu quả kinh doanh và tà
 * **Direct Download:** [Download sales-performance-powerbi.pbix](./sales-performance-powerbi.pbix)
 * **Status:** Public Portfolio Project
 
-![Trang 1: Tổng quan tình hình kinh doanh & tài chính](assets/demo-dashboard.gif)
-![Trang 2: Phân tích chi tiết theo Mô hình & Khu vực](assets/demo-dashboard.gif)
+## Các trang báo cáo
 
-## Mục tiêu
+- **Trang 1 - Tổng quan tình hình kinh doanh & tài chính**: Theo dõi các chỉ tiêu chính về tình hình kinh doanh và hiệu quả tài chính. 
+
+![Trang 1: Tổng quan tình hình kinh doanh & tài chính](assets/dashboard-preview-1.png)
+
+- **Trang 2 - Phân tích chi tiết theo Mô hình & Khu vực**: Xem chi tiết kết quả hoạt động từ khu vực/đơn vị đến ngành hàng, nhóm hàng và SKU; đồng thời theo dõi doanh thu, chi phí và hiệu quả tài chính theo thời gian.
+
+![Trang 2: Phân tích chi tiết theo Mô hình & Khu vực](assets/dashboard-preview-2.png)
+
+## 🎯 Mục tiêu
 
 - Tổng hợp dữ liệu tài chính và bán hàng trên một mô hình dữ liệu thống nhất.
 - Theo dõi các chỉ tiêu doanh thu, chi phí, giá vốn và các giá trị tài chính.
@@ -20,7 +27,7 @@ Dashboard cung cấp góc nhìn tổng quan về hiệu quả kinh doanh và tà
 - Hỗ trợ drill-through từ báo cáo tổng quan đến trang phân tích chi tiết.
 
 
-## Công nghệ
+## 🛠️ Công nghệ
 
 | Công cụ / kỹ thuật | Mô tả |
 |---|---|
@@ -31,7 +38,7 @@ Dashboard cung cấp góc nhìn tổng quan về hiệu quả kinh doanh và tà
 | **Parquet, Excel** | Là nguồn dữ liệu mẫu trong quá trình demo và phát triển. |
 | **Deneb** | Dùng cho một số trực quan hóa tùy chỉnh trong báo cáo. |
 
-## Cấu trúc project
+## 📂 Cấu trúc project
 
 ```text
 .
@@ -67,12 +74,7 @@ Dashboard cung cấp góc nhìn tổng quan về hiệu quả kinh doanh và tà
 └── .git/
 ```
 
-## Các trang báo cáo
-
-- **Tổng quan**: Theo dõi các chỉ tiêu chính về tình hình kinh doanh và hiệu quả tài chính. 
-- **Mô hình/ Khu vực**: Xem chi tiết kết quả hoạt động từ khu vực/đơn vị đến ngành hàng, nhóm hàng và SKU; đồng thời theo dõi doanh thu, chi phí và hiệu quả tài chính theo thời gian.
-
-## Mô hình dữ liệu
+## 📦 Mô hình dữ liệu
 
 | Bảng | Mô tả |
 |---|---|
@@ -86,7 +88,7 @@ Dashboard cung cấp góc nhìn tổng quan về hiệu quả kinh doanh và tà
 | `Measure`, `_measures` | Các measure và chỉ tiêu KPI dùng trong báo cáo. |
 | `Heatmap` | Bảng hỗ trợ trực quan hóa heatmap trong báo cáo. |
 
-## Dữ liệu mẫu
+## 📑 Dữ liệu mẫu
 
 Dữ liệu mẫu hiện đang nằm trong thư mục `data/` và được các partition trong semantic model đọc trực tiếp từ các file local hiện tại:
 
@@ -97,7 +99,7 @@ Dữ liệu mẫu hiện đang nằm trong thư mục `data/` và được các 
 
 Lưu ý: các `File.Contents(...)` trong TMDL đang dùng đường dẫn local của máy hiện tại (ví dụ `C:\Users\xxx\Documents\...` hoặc `C:\Users\xxx\Documents\sales-performance-powerbi\data\...`), nên khi chuyển project sang môi trường/máy khác cần cập nhật lại đường dẫn tương ứng hoặc thay bằng nguồn dữ liệu phù hợp.
 
-## Cách sử dụng
+## 🚀 Cách sử dụng
 
 1. Cài đặt **Power BI Desktop** phiên bản hỗ trợ Power BI Project.
 2. Mở file `sales-performance-powerbi.pbip`.
