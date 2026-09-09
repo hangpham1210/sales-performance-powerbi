@@ -13,7 +13,7 @@ Dashboard cung cấp góc nhìn tổng quan về hiệu quả kinh doanh và tà
 
 <img src="assets/demo-dashboard.gif" alt="Demo dashboard GIF" width="66%" />
 
-## Các trang báo cáo
+## Report Pages
 
 - **Trang 1 - Tổng quan tình hình kinh doanh & tài chính**: Theo dõi các chỉ tiêu chính về tình hình kinh doanh và hiệu quả tài chính. 
 
@@ -24,15 +24,18 @@ Dashboard cung cấp góc nhìn tổng quan về hiệu quả kinh doanh và tà
 <img src="assets/dashboard-preview-2.png" alt="Trang 2: Phân tích chi tiết theo Mô hình & Khu vực" width="66%" />
 
 
-## 🎯 Mục tiêu
+## 🎯 Business Context & Objectives
 
 - Tổng hợp dữ liệu tài chính và bán hàng trên một mô hình dữ liệu thống nhất.
 - Theo dõi các chỉ tiêu doanh thu, chi phí, giá vốn và các giá trị tài chính.
 - Phân tích biến động theo năm/tháng, khu vực, cửa hàng, ngành hàng và nhóm hàng.
 - Hỗ trợ drill-through từ báo cáo tổng quan đến trang phân tích chi tiết.
 
+## 💡 Key Business Insights
 
-## 🛠️ Công nghệ
+
+
+## 🛠️ Tools & Technologies
 
 | Công cụ / kỹ thuật | Mô tả |
 |---|---|
@@ -44,7 +47,7 @@ Dashboard cung cấp góc nhìn tổng quan về hiệu quả kinh doanh và tà
 | **Deneb** | Dùng cho một số trực quan hóa tùy chỉnh trong báo cáo. |
 
 
-## 📦 Mô hình dữ liệu
+## 📦 Data Model
 
 | Bảng | Mô tả |
 |---|---|
@@ -58,7 +61,7 @@ Dashboard cung cấp góc nhìn tổng quan về hiệu quả kinh doanh và tà
 | `Measure`, `_measures` | Các measure và chỉ tiêu KPI dùng trong báo cáo. |
 | `Heatmap` | Bảng hỗ trợ trực quan hóa heatmap trong báo cáo. |
 
-## 📑 Dữ liệu mẫu
+## 📑 Sample Data
 
 Dữ liệu mẫu hiện đang nằm trong thư mục `data/` và được các partition trong semantic model đọc trực tiếp từ các file local hiện tại:
 
@@ -69,7 +72,7 @@ Dữ liệu mẫu hiện đang nằm trong thư mục `data/` và được các 
 
 Lưu ý: các `File.Contents(...)` trong TMDL đang dùng đường dẫn local của máy hiện tại (ví dụ `C:\Users\xxx\Documents\...` hoặc `C:\Users\xxx\Documents\sales-performance-powerbi\data\...`), nên khi chuyển project sang môi trường/máy khác cần cập nhật lại đường dẫn tương ứng hoặc thay bằng nguồn dữ liệu phù hợp.
 
-## 📂 Cấu trúc project
+## 📂 Repository Structure
 
 ```text
 .
@@ -105,7 +108,7 @@ Lưu ý: các `File.Contents(...)` trong TMDL đang dùng đường dẫn local 
 └── .git/
 ```
 
-## 🚀 Cách sử dụng
+## 🚀 Getting Started
 
 1. Cài đặt **Power BI Desktop** phiên bản hỗ trợ Power BI Project.
 2. Mở file `sales-performance-powerbi.pbip`.
