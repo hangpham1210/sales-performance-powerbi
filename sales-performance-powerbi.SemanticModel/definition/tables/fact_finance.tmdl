@@ -103,7 +103,7 @@ table fact_finance
 				let
 				    Source = let
 				    Source = Parquet.Document(
-				        File.Contents("C:\Users\phamt\Documents\sales-performance-powerbi\data\fact-finance_dummy.parquet")
+				        File.Contents("C:\Users\phamt\OneDrive\Documents\GitHub\sales-performance-powerbi\data\fact-finance_dummy.parquet")
 				    )
 				
 				in

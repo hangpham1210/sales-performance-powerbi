@@ -93,7 +93,7 @@ table dim_store
 				let
 				    Source = let
 				    Source = Excel.Workbook(
-				        File.Contents("C:\Users\phamt\Documents\Dummy\store.xlsx"),
+				        File.Contents("C:\Users\phamt\OneDrive\Documents\GitHub\sales-performance-powerbi\data\store.xlsx"),
 				        null,
 				        true
 				    ),

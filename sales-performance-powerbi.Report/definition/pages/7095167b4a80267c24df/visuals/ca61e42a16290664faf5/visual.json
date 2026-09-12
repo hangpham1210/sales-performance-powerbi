@@ -83,36 +83,6 @@
                       "Cases": [
                         {
                           "Condition": {
-                            "StartsWith": {
-                              "Left": {
-                                "Measure": {
-                                  "Expression": {
-                                    "SourceRef": {
-                                      "Entity": "Measure"
-                                    }
-                                  },
-                                  "Property": "% Tăng trưởng Chi phí hoạt động_card"
-                                }
-                              },
-                              "Right": {
-                                "Literal": {
-                                  "Value": "'▼'"
-                                }
-                              }
-                            },
-                            "Annotations": {
-                              "PowerBI.SQExprEvaluationKind": 1,
-                              "PowerBI.SQExprTextOperatorOption": 8
-                            }
-                          },
-                          "Value": {
-                            "Literal": {
-                              "Value": "'#FF0000'"
-                            }
-                          }
-                        },
-                        {
-                          "Condition": {
                             "Not": {
                               "Expression": {
                                 "StartsWith": {
@@ -137,6 +107,36 @@
                                   "PowerBI.SQExprTextOperatorOption": 9
                                 }
                               }
+                            }
+                          },
+                          "Value": {
+                            "Literal": {
+                              "Value": "'#FF0000'"
+                            }
+                          }
+                        },
+                        {
+                          "Condition": {
+                            "StartsWith": {
+                              "Left": {
+                                "Measure": {
+                                  "Expression": {
+                                    "SourceRef": {
+                                      "Entity": "Measure"
+                                    }
+                                  },
+                                  "Property": "% Tăng trưởng Chi phí hoạt động_card"
+                                }
+                              },
+                              "Right": {
+                                "Literal": {
+                                  "Value": "'▼'"
+                                }
+                              }
+                            },
+                            "Annotations": {
+                              "PowerBI.SQExprEvaluationKind": 1,
+                              "PowerBI.SQExprTextOperatorOption": 8
                             }
                           },
                           "Value": {

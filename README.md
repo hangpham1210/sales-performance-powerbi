@@ -13,7 +13,7 @@ Dashboard cung cấp góc nhìn tổng quan về hiệu quả kinh doanh và tà
 
 <img src="assets/demo-dashboard.gif" alt="Demo dashboard GIF" width="66%" />
 
-## Report Pages
+### Report Pages
 
 - **Trang 1 - Tổng quan tình hình kinh doanh & tài chính**: Theo dõi các chỉ tiêu chính về tình hình kinh doanh và hiệu quả tài chính. 
 
@@ -22,7 +22,6 @@ Dashboard cung cấp góc nhìn tổng quan về hiệu quả kinh doanh và tà
 - **Trang 2 - Phân tích chi tiết theo Mô hình & Khu vực**: Xem chi tiết kết quả hoạt động từ khu vực/đơn vị đến ngành hàng, nhóm hàng và SKU; đồng thời theo dõi doanh thu, chi phí và hiệu quả tài chính theo thời gian.
 
 <img src="assets/dashboard-preview-2.png" alt="Trang 2: Phân tích chi tiết theo Mô hình & Khu vực" width="66%" />
-
 
 ## 🎯 Business Context & Objectives
 
@@ -33,6 +32,13 @@ Dashboard cung cấp góc nhìn tổng quan về hiệu quả kinh doanh và tà
 
 ## 💡 Key Business Insights
 
+* Doanh số 4 mô hình **giảm nhẹ 0,9–2,4%**, biến động mạnh trong năm nhưng **phục hồi tích cực vào cuối năm**, với tháng 12 tăng **17,0%**.
+
+* **Doanh thu thuần tăng 1,0% lên 54.341 tỷ**, trong khi doanh số từ hoạt động bán hàng **giảm 1,4%**; lãi gộp giảm **7,4% còn 7.174 tỷ** và LNTT **âm 11.182 tỷ**. Tăng trưởng doanh thu chưa chuyển hóa thành lợi nhuận do áp lực từ **chi phí vận hành, hàng trả lại, hao hụt, mặt bằng và lãi vay**.
+
+* **CVS là mô hình thua lỗ lớn nhất với -5.329 tỷ**, trong đó **KV1 là nguyên nhân lớn nhất kéo giảm LNTT của mô hình**; Supermarket suy giảm mạnh nhất về lãi gộp (**-63,8%**), trong khi Modern Grocery Store là mô hình tích cực nhất.
+
+* Trọng tâm cải thiện là **kiểm soát chi phí, hàng trả lại và hao hụt**, đồng thời **nhân rộng động lực tăng trưởng từ TPCN** và tập trung xử lý các nhóm hàng/SKU có tỷ trọng cao nhưng suy giảm mạnh.
 
 
 ## 🛠️ Tools & Technologies
@@ -45,7 +51,6 @@ Dashboard cung cấp góc nhìn tổng quan về hiệu quả kinh doanh và tà
 | **Power Query** | Nạp, làm sạch và biến đổi dữ liệu trước khi mô hình hóa. |
 | **Parquet, Excel** | Là nguồn dữ liệu mẫu trong quá trình demo và phát triển. |
 | **Deneb** | Dùng cho một số trực quan hóa tùy chỉnh trong báo cáo. |
-
 
 ## 📦 Data Model
 
@@ -112,7 +117,7 @@ Lưu ý: các `File.Contents(...)` trong TMDL đang dùng đường dẫn local 
 
 1. Cài đặt **Power BI Desktop** phiên bản hỗ trợ Power BI Project.
 2. Mở file `sales-performance-powerbi.pbip`.
-3. Kiểm tra và cập nhật đường dẫn đến các file Parquet nếu cần.
+3. Kiểm tra và cập nhật đường dẫn đến các file Parquet và Excel nếu cần.
 4. Chọn **Refresh** để nạp dữ liệu mới.
 5. Sử dụng bộ lọc trên từng trang và drill-through để xem chi tiết.
 
