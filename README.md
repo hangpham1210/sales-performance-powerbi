@@ -30,15 +30,11 @@ Dashboard cung cấp góc nhìn tổng quan về hiệu quả kinh doanh và tà
 - Phân tích biến động theo năm/tháng, khu vực, cửa hàng, ngành hàng và nhóm hàng.
 - Hỗ trợ drill-through từ báo cáo tổng quan đến trang phân tích chi tiết.
 
-## 💡 Key Business Insights
-
-* Doanh số 4 mô hình **giảm nhẹ 0,9–2,4%**, biến động mạnh trong năm nhưng **phục hồi tích cực vào cuối năm**, với tháng 12 tăng **17,0%**.
-
-* **Doanh thu thuần tăng 1,0% lên 54.341 tỷ**, trong khi doanh số từ hoạt động bán hàng **giảm 1,4%**; lãi gộp giảm **7,4% còn 7.174 tỷ** và LNTT **âm 11.182 tỷ**. Tăng trưởng doanh thu chưa chuyển hóa thành lợi nhuận do áp lực từ **chi phí vận hành, hàng trả lại, hao hụt, mặt bằng và lãi vay**.
-
-* **CVS là mô hình thua lỗ lớn nhất với -5.329 tỷ**, trong đó **KV1 là nguyên nhân lớn nhất kéo giảm LNTT của mô hình**; Supermarket suy giảm mạnh nhất về lãi gộp (**-63,8%**), trong khi Modern Grocery Store là mô hình tích cực nhất.
-
-* Trọng tâm cải thiện là **kiểm soát chi phí, hàng trả lại và hao hụt**, đồng thời **nhân rộng động lực tăng trưởng từ TPCN** và tập trung xử lý các nhóm hàng/SKU có tỷ trọng cao nhưng suy giảm mạnh.
+>#### 💡 Key Business Insights
+> * Doanh số 4 mô hình **giảm nhẹ 0,9–2,4%**, biến động mạnh trong năm nhưng **phục hồi tích cực vào cuối năm**, với tháng 12 tăng **17,0%**.
+> * **Doanh thu thuần tăng 1,0% lên 54.341 tỷ**, trong khi doanh số từ hoạt động bán hàng **giảm 1,4%**; lãi gộp giảm **7,4% còn 7.174 tỷ** và LNTT **âm 11.182 tỷ**. Tăng trưởng doanh thu chưa chuyển hóa thành lợi nhuận do áp lực từ **chi phí vận hành, hàng trả lại, hao hụt, mặt bằng và lãi vay**.
+> * **CVS là mô hình thua lỗ lớn nhất với -5.329 tỷ**, trong đó **KV1 là nguyên nhân lớn nhất kéo giảm LNTT của mô hình**; Supermarket suy giảm mạnh nhất về lãi gộp (**-63,8%**), trong khi Modern Grocery Store là mô hình tích cực nhất.
+> * Trọng tâm cải thiện là **kiểm soát chi phí, hàng trả lại và hao hụt**, đồng thời **nhân rộng động lực tăng trưởng từ TPCN** và tập trung xử lý các nhóm hàng/SKU có tỷ trọng cao nhưng suy giảm mạnh.
 
 
 ## 🛠️ Tools & Technologies
